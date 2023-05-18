@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-python
+  labels:
+    app: my-python
+spec:
+  containers:
+  - name: my-python
+    image: krajewskim/python-api:new
+    ports:
+    - containerPort: 5002
+    # livenessProbe:
+    #   tcpSocket:
+    #     port: 5002
+    #   initialDelaySeconds: 5
+    #   periodSeconds: 10
+    # readinessProbe:
+    #   httpGet:
+    #     path: /healthz
+    #     port: 5002
+    #   initialDelaySeconds: 25
+    #   timeoutSeconds: 1
+    #   periodSeconds: 10
+    #   failureThreshold: 3

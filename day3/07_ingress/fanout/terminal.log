@@ -1,0 +1,124 @@
+$ kubectl apply -f .
+service/helloapp-fanout-echo-svc created
+deployment.apps/helloapp-fanout-echo-dep created
+service/helloapp-fanout-host-svc created
+deployment.apps/helloapp-fanout-host-dep created
+ingress.networking.k8s.io/fanout-ing created
+$ kubectl describe ingress
+Name:             pk
+Labels:           <none>
+Namespace:        default
+Address:          127.0.0.1
+Ingress Class:    nginx
+Default backend:  pk:80 (10.1.216.83:80)
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  *           *     pk:80 (10.1.216.83:80)
+Annotations:  <none>
+Events:
+  Type    Reason  Age                    From                      Message
+  ----    ------  ----                   ----                      -------
+  Normal  Sync    3m46s (x2 over 4m27s)  nginx-ingress-controller  Scheduled for sync
+
+
+Name:             fanout-ing
+Labels:           <none>
+Namespace:        default
+Address:          
+Ingress Class:    nginx
+Default backend:  <default>
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  *           
+              /host/?(.*)   helloapp-fanout-host-svc:80 (10.1.216.96:8080)
+              /echo/?(.*)   helloapp-fanout-echo-svc:8080 (10.1.216.94:8080)
+Annotations:  nginx.ingress.kubernetes.io/rewrite-target: /$1
+Events:
+  Type    Reason  Age   From                      Message
+  ----    ------  ----  ----                      -------
+  Normal  Sync    28s   nginx-ingress-controller  Scheduled for sync
+$ curl 209.38.243.80:/host 
+curl: (1) Protocol "209.38.243.80" not supported or disabled in libcurl
+$ curl 209.38.243.80:80/host 
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+$ curl 209.38.243.80:80/echo 
+CLIENT VALUES:
+client_address=10.1.216.69
+command=GET
+real path=/
+query=nil
+request_version=1.1
+request_uri=http://209.38.243.80:8080/
+
+SERVER VALUES:
+server_version=nginx: 1.10.0 - lua: 10001
+
+HEADERS RECEIVED:
+accept=*/*
+host=209.38.243.80
+user-agent=curl/7.87.0
+x-forwarded-for=77.79.200.11
+x-forwarded-host=209.38.243.80
+x-forwarded-port=80
+x-forwarded-proto=http
+x-forwarded-scheme=http
+x-real-ip=77.79.200.11
+x-request-id=a891059e62a15bd05662b277cf9b79bb
+x-scheme=http
+BODY:
+-no body in request-%                                                                                                                
+$ curl 209.38.243.80:8080/echo
+curl: (7) Failed to connect to 209.38.243.80 port 8080 after 40 ms: Couldn't connect to server
+$ kubectl delete -f .         
+service "helloapp-fanout-echo-svc" deleted
+deployment.apps "helloapp-fanout-echo-dep" deleted
+service "helloapp-fanout-host-svc" deleted
+deployment.apps "helloapp-fanout-host-dep" deleted
+ingress.networking.k8s.io "fanout-ing" deleted
+$ kubectl apply -f .          
+service/helloapp-fanout-echo-svc created
+deployment.apps/helloapp-fanout-echo-dep created
+service/helloapp-fanout-host-svc created
+deployment.apps/helloapp-fanout-host-dep created
+ingress.networking.k8s.io/fanout-ing created
+$ curl 209.38.243.80:8080/echo
+curl: (7) Failed to connect to 209.38.243.80 port 8080 after 37 ms: Couldn't connect to server
+$ curl 209.38.243.80:8080/echo
+curl: (7) Failed to connect to 209.38.243.80 port 8080 after 42 ms: Couldn't connect to server
+$ curl 209.38.243.80:80/echo  
+CLIENT VALUES:
+client_address=10.1.216.69
+command=GET
+real path=/
+query=nil
+request_version=1.1
+request_uri=http://209.38.243.80:8080/
+
+SERVER VALUES:
+server_version=nginx: 1.10.0 - lua: 10001
+
+HEADERS RECEIVED:
+accept=*/*
+host=209.38.243.80
+user-agent=curl/7.87.0
+x-forwarded-for=77.79.200.11
+x-forwarded-host=209.38.243.80
+x-forwarded-port=80
+x-forwarded-proto=http
+x-forwarded-scheme=http
+x-real-ip=77.79.200.11
+x-request-id=6ecfc342f389f0657d3e0913906d1563
+x-scheme=http
+BODY:
+-no body in request-%                                                                                                                
+$ curl 209.38.243.80:80/host
+<html><body><h1>It works!</h1></body></html>
+$ 

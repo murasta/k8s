@@ -1,0 +1,176 @@
+$ kubectl get pod
+NAME          READY   STATUS    RESTARTS   AGE
+myapp-pod     1/1     Running   0          19h
+pkad-health   1/1     Running   0          20m
+my-python     0/1     Running   0          3m54s
+$ kubectl apply -f replica-set.yaml
+replicaset.apps/replicate-my-app created
+$ kubectl get all
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/pkad-health              1/1     Running   0          21m
+pod/my-python                0/1     Running   0          4m9s
+pod/myapp-pod                1/1     Running   0          19h
+pod/replicate-my-app-x82md   1/1     Running   0          7s
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes       ClusterIP   10.152.183.1     <none>        443/TCP          21h
+service/myapp-pod        NodePort    10.152.183.200   <none>        80:32023/TCP     18h
+service/my-app-service   NodePort    10.152.183.134   <none>        80:31432/TCP     18h
+service/my-python        NodePort    10.152.183.40    <none>        5002:31143/TCP   18h
+service/pkad             NodePort    10.152.183.229   <none>        8080:32595/TCP   21m
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/replicate-my-app   2         2         2       8s
+$ kubectl apply -f pod.yaml
+pod/myapp-pod1 created
+pod/myapp-pod2 created
+$ kubectl get pod
+NAME                     READY   STATUS        RESTARTS   AGE
+pkad-health              1/1     Running       0          29m
+my-python                0/1     Running       0          12m
+myapp-pod                1/1     Running       0          19h
+replicate-my-app-x82md   1/1     Running       0          8m14s
+myapp-pod2               1/1     Terminating   0          7s
+$ kubectl get events
+LAST SEEN   TYPE      REASON             OBJECT                        MESSAGE
+40m         Normal    Scheduled          pod/pkad-health               Successfully assigned default/pkad-health to workshop-6
+40m         Normal    Pulling            pod/pkad-health               Pulling image "poznajkubernetes/pkad:blue"
+40m         Normal    Pulled             pod/pkad-health               Successfully pulled image "poznajkubernetes/pkad:blue" in 3.833903584s (3.833934908s including waiting)
+40m         Normal    Created            pod/pkad-health               Created container pkad
+40m         Normal    Started            pod/pkad-health               Started container pkad
+29m         Normal    Killing            pod/pkad-health               Stopping container pkad
+29m         Normal    Scheduled          pod/pkad-health               Successfully assigned default/pkad-health to workshop-6
+29m         Normal    Pulled             pod/pkad-health               Container image "poznajkubernetes/pkad:blue" already present on machine
+29m         Normal    Created            pod/pkad-health               Created container pkad
+29m         Normal    Started            pod/pkad-health               Started container pkad
+21m         Normal    Killing            pod/my-python                 Stopping container my-python
+21m         Normal    Scheduled          pod/my-python                 Successfully assigned default/my-python to workshop-6
+21m         Normal    Pulled             pod/my-python                 Container image "krajewskim/python-api:new" already present on machine
+21m         Normal    Created            pod/my-python                 Created container my-python
+21m         Normal    Started            pod/my-python                 Started container my-python
+19m         Normal    Killing            pod/my-python                 Stopping container my-python
+19m         Normal    Scheduled          pod/my-python                 Successfully assigned default/my-python to workshop-6
+19m         Normal    Pulled             pod/my-python                 Container image "krajewskim/python-api:new" already present on machine
+19m         Normal    Created            pod/my-python                 Created container my-python
+19m         Normal    Started            pod/my-python                 Started container my-python
+12m         Normal    Killing            pod/my-python                 Stopping container my-python
+12m         Normal    Scheduled          pod/my-python                 Successfully assigned default/my-python to workshop-6
+12m         Normal    Pulled             pod/my-python                 Container image "krajewskim/python-api:new" already present on machine
+12m         Normal    Created            pod/my-python                 Created container my-python
+12m         Normal    Started            pod/my-python                 Started container my-python
+12m         Normal    Killing            pod/my-python                 Stopping container my-python
+12m         Normal    Scheduled          pod/my-python                 Successfully assigned default/my-python to workshop-6
+12m         Normal    Pulled             pod/my-python                 Container image "krajewskim/python-api:new" already present on machine
+12m         Normal    Created            pod/my-python                 Created container my-python
+12m         Normal    Started            pod/my-python                 Started container my-python
+8m36s       Normal    SuccessfulCreate   replicaset/replicate-my-app   Created pod: replicate-my-app-x82md
+8m35s       Normal    Scheduled          pod/replicate-my-app-x82md    Successfully assigned default/replicate-my-app-x82md to workshop-6
+8m35s       Normal    Pulling            pod/replicate-my-app-x82md    Pulling image "nginx"
+8m34s       Normal    Pulled             pod/replicate-my-app-x82md    Successfully pulled image "nginx" in 894.790347ms (894.802867ms including waiting)
+8m34s       Normal    Created            pod/replicate-my-app-x82md    Created container myapp-container
+8m33s       Normal    Started            pod/replicate-my-app-x82md    Started container myapp-container
+2m27s       Warning   Unhealthy          pod/my-python                 Readiness probe failed: HTTP probe failed with statuscode: 500
+28s         Normal    Scheduled          pod/myapp-pod1                Successfully assigned default/myapp-pod1 to workshop-6
+28s         Normal    Scheduled          pod/myapp-pod2                Successfully assigned default/myapp-pod2 to workshop-6
+28s         Normal    SuccessfulDelete   replicaset/replicate-my-app   Deleted pod: myapp-pod1
+28s         Normal    SuccessfulDelete   replicaset/replicate-my-app   Deleted pod: myapp-pod2
+27s         Normal    Pulling            pod/myapp-pod1                Pulling image "nginx"
+27s         Normal    Pulling            pod/myapp-pod2                Pulling image "nginx"
+26s         Normal    Pulled             pod/myapp-pod1                Successfully pulled image "nginx" in 886.280849ms (886.535012ms including waiting)
+26s         Normal    Created            pod/myapp-pod1                Created container myapp-container
+25s         Normal    Started            pod/myapp-pod1                Started container myapp-container
+25s         Normal    Pulled             pod/myapp-pod2                Successfully pulled image "nginx" in 941.629304ms (1.578706706s including waiting)
+25s         Normal    Created            pod/myapp-pod2                Created container myapp-container
+25s         Normal    Killing            pod/myapp-pod1                Stopping container myapp-container
+24s         Normal    Started            pod/myapp-pod2                Started container myapp-container
+24s         Normal    Killing            pod/myapp-pod2                Stopping container myapp-container
+$ kubectl delete pod myapp-pod
+pod "myapp-pod" deleted
+^[[A^[[%                                                                                                                           
+$ kubectl get pod             
+NAME                     READY   STATUS    RESTARTS   AGE
+pkad-health              1/1     Running   0          30m
+my-python                0/1     Running   0          13m
+replicate-my-app-x82md   1/1     Running   0          9m33s
+replicate-my-app-8wccq   1/1     Running   0          9s
+$ kubectl scale rs replicate-my-app --replicas=3
+replicaset.apps/replicate-my-app scaled
+$ kubectl get all                               
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/pkad-health              1/1     Running   0          30m
+pod/my-python                0/1     Running   0          13m
+pod/replicate-my-app-x82md   1/1     Running   0          9m49s
+pod/replicate-my-app-8wccq   1/1     Running   0          25s
+pod/replicate-my-app-lk2fn   1/1     Running   0          5s
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes       ClusterIP   10.152.183.1     <none>        443/TCP          21h
+service/myapp-pod        NodePort    10.152.183.200   <none>        80:32023/TCP     19h
+service/my-app-service   NodePort    10.152.183.134   <none>        80:31432/TCP     18h
+service/my-python        NodePort    10.152.183.40    <none>        5002:31143/TCP   18h
+service/pkad             NodePort    10.152.183.229   <none>        8080:32595/TCP   30m
+
+NAME                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/replicate-my-app   3         3         3       9m51s
+$ kubectl get all
+NAME                                   READY   STATUS    RESTARTS   AGE
+pod/pkad-health                        1/1     Running   0          89m
+pod/my-python                          0/1     Running   0          72m
+pod/nginx-deployment-f6b5f4664-zj6nb   1/1     Running   0          36m
+pod/nginx-deployment-f6b5f4664-dh979   1/1     Running   0          35m
+pod/nginx-deployment-f6b5f4664-dnrgv   1/1     Running   0          35m
+pod/my-python-5895b48bd9-gnsr5         1/1     Running   0          35s
+pod/redis-7f9f9c8fc7-vfxs7             1/1     Running   0          35s
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes       ClusterIP   10.152.183.1     <none>        443/TCP          22h
+service/myapp-pod        NodePort    10.152.183.200   <none>        80:32023/TCP     20h
+service/my-app-service   NodePort    10.152.183.134   <none>        80:31432/TCP     19h
+service/my-python        NodePort    10.152.183.40    <none>        5002:31143/TCP   19h
+service/pkad             NodePort    10.152.183.229   <none>        8080:32595/TCP   89m
+service/python-svc       NodePort    10.152.183.193   <none>        5002:32268/TCP   35s
+service/db-svc           ClusterIP   10.152.183.145   <none>        6379/TCP         35s
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx-deployment   3/3     3            3           52m
+deployment.apps/my-python          1/1     1            1           35s
+deployment.apps/redis              1/1     1            1           35s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/replicate-my-app              0         0         0       68m
+replicaset.apps/nginx-deployment-5bf45dd795   0         0         0       52m
+replicaset.apps/nginx-deployment-f6b5f4664    3         3         3       47m
+replicaset.apps/my-python-5895b48bd9          1         1         1       35s
+replicaset.apps/redis-7f9f9c8fc7              1         1         1       35s
+$ kubectl delete pod my-python
+pod "my-python" deleted
+$ kubectl get all             
+NAME                                   READY   STATUS    RESTARTS   AGE
+pod/pkad-health                        1/1     Running   0          90m
+pod/nginx-deployment-f6b5f4664-zj6nb   1/1     Running   0          37m
+pod/nginx-deployment-f6b5f4664-dh979   1/1     Running   0          36m
+pod/nginx-deployment-f6b5f4664-dnrgv   1/1     Running   0          36m
+pod/my-python-5895b48bd9-gnsr5         1/1     Running   0          86s
+pod/redis-7f9f9c8fc7-vfxs7             1/1     Running   0          86s
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes       ClusterIP   10.152.183.1     <none>        443/TCP          22h
+service/myapp-pod        NodePort    10.152.183.200   <none>        80:32023/TCP     20h
+service/my-app-service   NodePort    10.152.183.134   <none>        80:31432/TCP     19h
+service/my-python        NodePort    10.152.183.40    <none>        5002:31143/TCP   19h
+service/pkad             NodePort    10.152.183.229   <none>        8080:32595/TCP   90m
+service/python-svc       NodePort    10.152.183.193   <none>        5002:32268/TCP   86s
+service/db-svc           ClusterIP   10.152.183.145   <none>        6379/TCP         86s
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx-deployment   3/3     3            3           53m
+deployment.apps/my-python          1/1     1            1           86s
+deployment.apps/redis              1/1     1            1           86s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/replicate-my-app              0         0         0       69m
+replicaset.apps/nginx-deployment-5bf45dd795   0         0         0       53m
+replicaset.apps/nginx-deployment-f6b5f4664    3         3         3       48m
+replicaset.apps/my-python-5895b48bd9          1         1         1       86s
+replicaset.apps/redis-7f9f9c8fc7              1         1         1       86s
+$ docker container ls -a

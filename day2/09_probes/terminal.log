@@ -1,0 +1,67 @@
+$ kubectl apply -f pkad-healthcheck.yaml 
+pod/pkad-health created
+$ kubectl apply -f svc.yaml  
+service/pkad created
+$ kubectl delete -f my-python.yaml        
+pod "my-python" deleted                                                                                                                
+$ kubectl apply -f .              
+pod/my-python created
+pod/pkad-health unchanged
+service/pkad unchanged
+$ kubectl describe pod my-python
+Name:             my-python
+Namespace:        default
+Priority:         0
+Service Account:  default
+Node:             workshop-6/209.38.243.80
+Start Time:       Thu, 18 May 2023 22:44:46 +0200
+Labels:           app=my-python
+Annotations:      cni.projectcalico.org/containerID: 01dd51edaa4bf7ad1135d6f0583e64718c1622d54cae28bc0ff99beed1f5babe
+                  cni.projectcalico.org/podIP: 10.1.216.98/32
+                  cni.projectcalico.org/podIPs: 10.1.216.98/32
+Status:           Running
+IP:               10.1.216.98
+IPs:
+  IP:  10.1.216.98
+Containers:
+  my-python:
+    Container ID:   containerd://2547c318a3a5bb8e891815763697fed91cb6b9a8a77ad1534f8be6e6c8fc9d3f
+    Image:          krajewskim/python-api:new
+    Image ID:       docker.io/krajewskim/python-api@sha256:7b1b2aee52603f7db8830eb0b0e6945f8b4f5e309774ad5fb46c62192b820ec5
+    Port:           5002/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Thu, 18 May 2023 22:44:48 +0200
+    Ready:          False
+    Restart Count:  0
+    Liveness:       tcp-socket :5002 delay=5s timeout=1s period=10s #success=1 #failure=3
+    Readiness:      http-get http://:5002/healthz delay=25s timeout=1s period=10s #success=1 #failure=3
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-77xjb (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             False 
+  ContainersReady   False 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-77xjb:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age               From               Message
+  ----     ------     ----              ----               -------
+  Normal   Scheduled  43s               default-scheduler  Successfully assigned default/my-python to workshop-6
+  Normal   Pulled     42s               kubelet            Container image "krajewskim/python-api:new" already present on machine
+  Normal   Created    42s               kubelet            Created container my-python
+  Normal   Started    42s               kubelet            Started container my-python
+  Warning  Unhealthy  4s (x2 over 14s)  kubelet            Readiness probe failed: HTTP probe failed with statuscode: 500
+$ 

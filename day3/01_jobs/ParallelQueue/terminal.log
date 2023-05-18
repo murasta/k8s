@@ -1,0 +1,63 @@
+$ kubectl apply -f redis.yaml
+deployment.apps/redis-deployment created
+service/redis-service configured
+$ kubectl apply -f producer.job.yaml
+job.batch/producer created
+$ kubectl apply -f parallel.job.yaml
+job.batch/parallel-consumer created
+$ kubectl get job
+NAME                COMPLETIONS   DURATION   AGE
+producer            0/1           13s        13s
+parallel-consumer   0/1 of 5      5s         5s
+$ kubectl get job
+NAME                COMPLETIONS   DURATION   AGE
+producer            0/1           18s        18s
+parallel-consumer   0/1 of 5      10s        10s
+$ kubectl get job -w
+NAME                COMPLETIONS   DURATION   AGE
+producer            1/1           19s        26s
+parallel-consumer   2/1 of 5      18s        18s
+^C%                                                                                                              
+$ kubectl get job
+NAME                COMPLETIONS   DURATION   AGE
+producer            1/1           19s        2m4s
+parallel-consumer   4/1 of 5      116s       116s
+$ kubectl logs -f -l type=consumer
+Connecting to redis
+Is consumer: TRUE
+Consuming
+Consumed 1
+Consumed 1
+Waiting 30
+Consumed 4
+Waiting 30
+Consumed 7
+Waiting 30
+Connecting to redis
+Is consumer: TRUE
+Consuming
+Consumed 2
+Consumed 2
+Waiting 30
+Consumed 5
+Waiting 30
+Consumed 8
+Waiting 30
+Connecting to redis
+Consuming
+Is consumer: TRUE
+Consuming
+Consumed None
+Consumed 0
+Consumed 0
+Waiting 30
+Consumed 3
+Waiting 30
+Consumed 6
+Waiting 30
+Consumed 9
+Waiting 30
+Connecting to redis
+Is consumer: TRUE
+Consuming
+Consumed None

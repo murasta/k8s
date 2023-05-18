@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    projekt: python
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+        projekt: python
+    spec:
+      containers:
+      - name: redis
+        image: redis:alpine
+        resources: {}
+        ports:
+        - containerPort: 6379
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping

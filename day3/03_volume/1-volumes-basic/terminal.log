@@ -1,0 +1,332 @@
+$ kubectl apply -f host-path-pod.yaml 
+pod/host-path-pod created
+$ kubectl exec -it host-path-pod -- ls /pod-empty/
+ModemManager                   magic
+NetworkManager                 magic.mime
+PackageKit                     mailcap
+X11                            mailcap.order
+adduser.conf                   manpath.config
+alternatives                   mdadm
+apparmor                       mime.types
+apparmor.d                     mke2fs.conf
+apport                         modprobe.d
+apt                            modules
+at.deny                        modules-load.d
+bash.bashrc                    mtab
+bash_completion                multipath.conf
+bash_completion.d              nanorc
+bindresvport.blacklist         netplan
+binfmt.d                       network
+byobu                          networkd-dispatcher
+ca-certificates                networks
+ca-certificates.conf           newt
+ca-certificates.conf.dpkg-old  nsswitch.conf
+calendar                       opt
+cloud                          os-release
+console-setup                  overlayroot.conf
+cron.d                         overlayroot.local.conf
+cron.daily                     pam.conf
+cron.hourly                    pam.d
+cron.monthly                   passwd
+cron.weekly                    passwd-
+crontab                        perl
+cryptsetup-initramfs           pki
+crypttab                       pm
+dbus-1                         polkit-1
+dconf                          pollinate
+debconf.conf                   popularity-contest.conf
+debian_version                 profile
+default                        profile.d
+deluser.conf                   protocols
+depmod.d                       python3
+dhcp                           python3.8
+dpkg                           rc0.d
+e2scrub.conf                   rc1.d
+ec2_version                    rc2.d
+environment                    rc3.d
+ethertypes                     rc4.d
+fonts                          rc5.d
+fstab                          rc6.d
+fuse.conf                      rcS.d
+fwupd                          resolv.conf
+gai.conf                       rmt
+groff                          rpc
+group                          rsyslog.conf
+group-                         rsyslog.d
+grub.d                         screenrc
+gshadow                        security
+gshadow-                       selinux
+gss                            services
+hdparm.conf                    shadow
+host.conf                      shadow-
+hostname                       shells
+hosts                          skel
+hosts.allow                    sos
+hosts.deny                     ssh
+init                           ssl
+init.d                         subgid
+initramfs-tools                subuid
+inputrc                        sudoers
+iproute2                       sudoers.d
+iscsi                          sysctl.conf
+issue                          sysctl.d
+issue.net                      systemd
+kernel                         terminfo
+kernel-img.conf                timezone
+landscape                      tmpfiles.d
+ld.so.cache                    ubuntu-advantage
+ld.so.conf                     ucf.conf
+ld.so.conf.d                   udev
+ldap                           udisks2
+legal                          ufw
+libaudit.conf                  update-manager
+libblockdev                    update-motd.d
+locale.alias                   update-notifier
+locale.gen                     usb_modeswitch.conf
+localtime                      usb_modeswitch.d
+logcheck                       vim
+login.defs                     vmware-tools
+logrotate.conf                 vtrgb
+logrotate.d                    wgetrc
+lsb-release                    xattr.conf
+ltrace.conf                    xdg
+lvm                            zsh_command_not_found
+machine-id
+$ kubectl apply -f empty-dir-pod.yaml             
+pod/empty-pod created
+$ kubectl get pod
+NAME                               READY   STATUS    RESTARTS   AGE
+pkad-health                        1/1     Running   0          4h31m
+nginx-deployment-f6b5f4664-zj6nb   1/1     Running   0          3h38m
+nginx-deployment-f6b5f4664-dh979   1/1     Running   0          3h37m
+nginx-deployment-f6b5f4664-dnrgv   1/1     Running   0          3h37m
+my-python-7fb5446d8c-n5gc7         1/1     Running   0          160m
+redis-7f9f9c8fc7-s8tg8             1/1     Running   0          160m
+host-path-pod                      1/1     Running   0          3m9s
+test-28072048-5vc87                1/1     Running   0          109s
+test-28072046-mhn6j                0/1     Error     0          3m49s
+test-28072046-rl79h                1/1     Running   0          92s
+test-28072049-x24k5                1/1     Running   0          49s
+test-28072047-982hf                0/1     Error     0          2m49s
+test-28072047-cctdd                1/1     Running   0          34s
+empty-pod                          2/2     Running   0          16s
+$ kubectl logs test-28072047-982hf   
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:--  0:02:09 --:--:--     0
+curl: (28) Failed to connect to python-service port 80: Connection timed out
+$ kubectl apply -f sub-path-overwrite-pod.yaml 
+configmap/subpath-overwrite-cm created
+pod/subpath-overwrite-pod created
+$ kubectl exec -it subpath-overwrite-pod -- sh
+Error from server (BadRequest): pod subpath-overwrite-pod does not have a host assigned
+$ kubectl exec -it subpath-overwrite-pod -- sh
+Error from server (BadRequest): pod subpath-overwrite-pod does not have a host assigned
+$ kubectl get pod
+NAME                               READY   STATUS    RESTARTS   AGE
+pkad-health                        1/1     Running   0          4h40m
+nginx-deployment-f6b5f4664-zj6nb   1/1     Running   0          3h47m
+nginx-deployment-f6b5f4664-dh979   1/1     Running   0          3h46m
+nginx-deployment-f6b5f4664-dnrgv   1/1     Running   0          3h46m
+my-python-7fb5446d8c-n5gc7         1/1     Running   0          169m
+redis-7f9f9c8fc7-s8tg8             1/1     Running   0          169m
+host-path-pod                      1/1     Running   0          11m
+test-28072046-mhn6j                0/1     Error     0          12m
+test-28072047-982hf                0/1     Error     0          11m
+empty-pod                          2/2     Running   0          8m59s
+test-28072048-5vc87                0/1     Error     0          10m
+test-28072046-rl79h                0/1     Error     0          10m
+test-28072049-x24k5                0/1     Error     0          9m32s
+test-28072047-cctdd                0/1     Error     0          9m17s
+test-28072050-4bd5r                0/1     Error     0          8m32s
+test-28072048-679r7                0/1     Error     0          8m14s
+test-28072051-t68c8                0/1     Error     0          7m32s
+test-28072046-fd6sv                0/1     Error     0          7m48s
+test-28072049-4jj8f                0/1     Error     0          7m14s
+test-28072052-z79xr                0/1     Error     0          6m32s
+test-28072047-zdjnk                0/1     Error     0          6m51s
+test-28072050-v75qh                0/1     Error     0          6m12s
+test-28072053-glwv7                0/1     Error     0          5m32s
+test-28072048-n82r6                0/1     Error     0          5m48s
+test-28072051-prnlv                0/1     Error     0          5m13s
+test-28072046-gsbqw                0/1     Error     0          5m11s
+test-28072054-276gl                0/1     Error     0          4m32s
+test-28072049-7htvn                0/1     Error     0          4m48s
+test-28072046-jrgmr                1/1     Running   0          2m15s
+test-28072054-zhjbt                1/1     Running   0          2m14s
+test-28072049-6lwmv                1/1     Running   0          2m10s
+subpath-overwrite-pod              0/1     Pending   0          119s
+test-28072052-5c2bl                0/1     Error     0          4m16s
+test-28072052-4kr68                1/1     Running   0          108s
+test-28072050-ddbzx                0/1     Error     0          3m57s
+test-28072050-khvrl                1/1     Running   0          102s
+test-28072057-nmjb2                1/1     Running   0          92s
+test-28072047-4rplh                0/1     Error     0          4m15s
+test-28072047-qnkhg                1/1     Running   0          78s
+test-28072055-nshjn                0/1     Error     0          3m32s
+test-28072055-g5c4k                1/1     Running   0          74s
+test-28072048-8vrs6                0/1     Error     0          3m12s
+test-28072048-xskl6                1/1     Running   0          54s
+test-28072053-vc5gj                0/1     Error     0          3m14s
+test-28072053-qtmgz                1/1     Running   0          46s
+test-28072058-whxjr                1/1     Running   0          32s
+test-28072051-xwdsd                0/1     Error     0          2m57s
+test-28072051-5pvf5                1/1     Running   0          19s
+test-28072056-mwwgn                0/1     Error     0          2m32s
+test-28072056-92s2g                1/1     Running   0          14s
+$ kubectl exec -it subpath-overwrite-pod -- sh  
+Error from server (BadRequest): pod subpath-overwrite-pod does not have a host assigned
+$ kubectl get cronejob
+error: the server doesn't have a resource type "cronejob"
+$ kubectl get cronjob 
+NAME   SCHEDULE    SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+test   * * * * *   False     15       22s             14m
+$ kubectl delete cronjob test
+cronjob.batch "test" deleted
+$ kubectl get job            
+No resources found in default namespace.
+$ kubektl apply -f sub-path-wo-overwrite-pod.yaml 
+zsh: command not found: kubektl
+$ kubectl apply -f sub-path-wo-overwrite-pod.yaml
+configmap/subpath-wo-overwrite-cm created
+pod/subpath-wo-overwrite-pod created
+$ kubectl get pod                                
+NAME                               READY   STATUS    RESTARTS   AGE
+pkad-health                        1/1     Running   0          4h43m
+nginx-deployment-f6b5f4664-zj6nb   1/1     Running   0          3h50m
+nginx-deployment-f6b5f4664-dh979   1/1     Running   0          3h49m
+nginx-deployment-f6b5f4664-dnrgv   1/1     Running   0          3h49m
+my-python-7fb5446d8c-n5gc7         1/1     Running   0          172m
+redis-7f9f9c8fc7-s8tg8             1/1     Running   0          172m
+host-path-pod                      1/1     Running   0          14m
+empty-pod                          2/2     Running   0          12m
+subpath-overwrite-pod              0/1     Pending   0          5m1s
+subpath-wo-overwrite-pod           0/1     Pending   0          13s
+$ kubectl exec -it  -- sh
+error: pod, type/name or --filename must be specified
+$ kubectl exec -it subpath-wo-overwrite-pod -- sh
+Error from server (BadRequest): pod subpath-wo-overwrite-pod does not have a host assigned
+$ kubectl delete -f sub-path-overwrite-pod.yaml
+pod "subpath-overwrite-pod" deleted
+Error from server (NotFound): error when deleting "sub-path-overwrite-pod.yaml": the server could not find the requested resource
+$ kubectl --help                               
+kubectl controls the Kubernetes cluster manager.
+
+ Find more information at: https://kubernetes.io/docs/reference/kubectl/
+
+Basic Commands (Beginner):
+  create          Create a resource from a file or from stdin
+  expose          Take a replication controller, service, deployment or pod and expose it as a new
+Kubernetes service
+  run             Run a particular image on the cluster
+  set             Set specific features on objects
+
+Basic Commands (Intermediate):
+  explain         Get documentation for a resource
+  get             Display one or many resources
+  edit            Edit a resource on the server
+  delete          Delete resources by file names, stdin, resources and names, or by resources and
+label selector
+
+Deploy Commands:
+  rollout         Manage the rollout of a resource
+  scale           Set a new size for a deployment, replica set, or replication controller
+  autoscale       Auto-scale a deployment, replica set, stateful set, or replication controller
+
+Cluster Management Commands:
+  certificate     Modify certificate resources.
+  cluster-info    Display cluster information
+  top             Display resource (CPU/memory) usage
+  cordon          Mark node as unschedulable
+  uncordon        Mark node as schedulable
+  drain           Drain node in preparation for maintenance
+  taint           Update the taints on one or more nodes
+
+Troubleshooting and Debugging Commands:
+  describe        Show details of a specific resource or group of resources
+  logs            Print the logs for a container in a pod
+  attach          Attach to a running container
+  exec            Execute a command in a container
+  port-forward    Forward one or more local ports to a pod
+  proxy           Run a proxy to the Kubernetes API server
+  cp              Copy files and directories to and from containers
+  auth            Inspect authorization
+  debug           Create debugging sessions for troubleshooting workloads and nodes
+
+Advanced Commands:
+  diff            Diff the live version against a would-be applied version
+  apply           Apply a configuration to a resource by file name or stdin
+  patch           Update fields of a resource
+  replace         Replace a resource by file name or stdin
+  wait            Experimental: Wait for a specific condition on one or many resources
+  kustomize       Build a kustomization target from a directory or URL.
+
+Settings Commands:
+  label           Update the labels on a resource
+  annotate        Update the annotations on a resource
+  completion      Output shell completion code for the specified shell (bash, zsh, fish, or
+powershell)
+
+Other Commands:
+  alpha           Commands for features in alpha
+  api-resources   Print the supported API resources on the server
+  api-versions    Print the supported API versions on the server, in the form of "group/version"
+  config          Modify kubeconfig files
+  plugin          Provides utilities for interacting with plugins
+  version         Print the client and server version information
+
+Usage:
+  kubectl [flags] [options]
+
+Use "kubectl <command> --help" for more information about a given command.
+Use "kubectl options" for a list of global command-line options (applies to all commands).
+$ kubectl delete pod -f sub-path-overwrite-pod.yaml
+error: when paths, URLs, or stdin is provided as input, you may not specify resource arguments as well
+$ kubectl get pod                                  
+NAME                               READY   STATUS    RESTARTS   AGE
+pkad-health                        1/1     Running   0          4h51m
+nginx-deployment-f6b5f4664-zj6nb   1/1     Running   0          3h58m
+nginx-deployment-f6b5f4664-dh979   1/1     Running   0          3h57m
+nginx-deployment-f6b5f4664-dnrgv   1/1     Running   0          3h57m
+my-python-7fb5446d8c-n5gc7         1/1     Running   0          3h
+redis-7f9f9c8fc7-s8tg8             1/1     Running   0          3h
+host-path-pod                      1/1     Running   0          23m
+empty-pod                          2/2     Running   0          20m
+subpath-wo-overwrite-pod           0/1     Pending   0          8m22s
+$ kubectl delete pod subpath-wo-overwrite-pod 
+pod "subpath-wo-overwrite-pod" deleted
+$ kubectl get pod                             
+NAME                               READY   STATUS    RESTARTS   AGE
+pkad-health                        1/1     Running   0          4h52m
+nginx-deployment-f6b5f4664-zj6nb   1/1     Running   0          3h58m
+nginx-deployment-f6b5f4664-dh979   1/1     Running   0          3h57m
+nginx-deployment-f6b5f4664-dnrgv   1/1     Running   0          3h57m
+my-python-7fb5446d8c-n5gc7         1/1     Running   0          3h
+redis-7f9f9c8fc7-s8tg8             1/1     Running   0          3h
+host-path-pod                      1/1     Running   0          23m
+empty-pod                          2/2     Running   0          20m
+$ kubectl delete all --all
+pod "pkad-health" deleted
+pod "nginx-deployment-f6b5f4664-zj6nb" deleted
+pod "nginx-deployment-f6b5f4664-dh979" deleted
+pod "nginx-deployment-f6b5f4664-dnrgv" deleted
+pod "my-python-7fb5446d8c-n5gc7" deleted
+pod "redis-7f9f9c8fc7-s8tg8" deleted
+pod "host-path-pod" deleted
+pod "empty-pod" deleted
+service "kubernetes" deleted
+service "myapp-pod" deleted
+service "my-app-service" deleted
+service "my-python" deleted
+service "pkad" deleted
+service "python-service" deleted
+service "db-svc" deleted
+deployment.apps "redis" deleted
+deployment.apps "my-python" deleted
+deployment.apps "nginx-deployment" deleted
+replicaset.apps "replicate-my-app" deleted
+$ 
+$ kubectl get sc
+NAME                          PROVISIONER            RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+microk8s-hostpath (default)   microk8s.io/hostpath   Delete          WaitForFirstConsumer   false                  26h
+$ 

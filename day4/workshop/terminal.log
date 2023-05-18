@@ -1,0 +1,18 @@
+$kubectl delete all,pv,pvc,cm,ingress,secrets --all
+service "kubernetes" deleted
+configmap "kube-root-ca.crt" deleted
+configmap "subpath-overwrite-cm" deleted
+configmap "subpath-wo-overwrite-cm" deleted
+$kubectl apply -f .                                
+deployment.apps/api created
+service/api created
+configmap/web-conf created
+ingress.networking.k8s.io/ingress-test created
+deployment.apps/mongo created
+service/mongo created
+persistentvolumeclaim/mongo-pvc created
+deployment.apps/web created
+service/web created
+$echo add todo works in browser http://web.209.38.243.80.nip.io/ 
+add todo works in browser http://web.209.38.243.80.nip.io/
+$

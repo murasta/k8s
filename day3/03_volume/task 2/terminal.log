@@ -1,0 +1,133 @@
+$ kubectl apply -f .
+cronjob.batch/python-counter unchanged
+deployment.apps/python unchanged
+service/python-service unchanged
+deployment.apps/redis created
+persistentvolumeclaim/redis-pvc unchanged
+service/redis-service unchanged
+$ kubectl get all                        
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/python-67db9879c9-5pg7g         0/1     Running   0          2m15s
+pod/python-counter-28072130-g44l5   0/1     Error     0          2m
+pod/python-counter-28072130-vl9j2   0/1     Error     0          112s
+pod/python-counter-28072130-kwz7x   0/1     Error     0          105s
+pod/python-counter-28072130-vtz42   0/1     Error     0          78s
+pod/python-counter-28072130-trvvk   0/1     Error     0          71s
+pod/python-counter-28072130-qs556   0/1     Error     0          65s
+pod/redis-8457f4b86d-mh7gf          1/1     Running   0          18s
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes       ClusterIP   10.152.183.1    <none>        443/TCP        13m
+service/python-service   NodePort    10.152.183.27   <none>        80:32147/TCP   2m15s
+service/redis-service    ClusterIP   10.152.183.90   <none>        6379/TCP       2m15s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/python   0/1     1            0           2m15s
+deployment.apps/redis    1/1     1            1           18s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/python-67db9879c9   1         1         0       2m15s
+replicaset.apps/redis-8457f4b86d    1         1         1       18s
+
+NAME                           SCHEDULE    SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/python-counter   * * * * *   False     1        2m1s            2m16s
+
+NAME                                COMPLETIONS   DURATION   AGE
+job.batch/python-counter-28072130   0/1           2m1s       2m1s
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"4"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"4"}
+$ kubktl get pod                       
+zsh: command not found: kubktl
+$ kubectl get pod
+NAME                            READY   STATUS      RESTARTS   AGE
+redis-8457f4b86d-mh7gf          1/1     Running     0          3m53s
+python-67db9879c9-5pg7g         1/1     Running     0          5m50s
+python-counter-28072135-6hzg7   0/1     Completed   0          35s
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"4"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"4"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"4"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"4"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"4"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"4"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"4"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"5"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"5"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"5"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"5"}
+$ kubectl delete cronjob.batch/python-counter 
+cronjob.batch "python-counter" deleted
+$ curl 209.38.243.80:32147/api/v1/info        
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"5"}
+$ curl 209.38.243.80:32147/api/v1/info 
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"5"}
+$ kubectl get all                            
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/redis-8457f4b86d-mh7gf    1/1     Running   0          5m3s
+pod/python-67db9879c9-5pg7g   1/1     Running   0          7m
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes       ClusterIP   10.152.183.1    <none>        443/TCP        18m
+service/python-service   NodePort    10.152.183.27   <none>        80:32147/TCP   7m
+service/redis-service    ClusterIP   10.152.183.90   <none>        6379/TCP       7m
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis    1/1     1            1           5m4s
+deployment.apps/python   1/1     1            1           7m1s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-8457f4b86d    1         1         1       5m4s
+replicaset.apps/python-67db9879c9   1         1         1       7m1s
+$ kubectl delete deployment.apps/redis        
+deployment.apps "redis" deleted
+$ deployment.apps/python
+zsh: no such file or directory: deployment.apps/python
+$ curl 209.38.243.80:32147/api/v1/info 
+Internal Server Error%                                                                                      
+$ kubectl apply -f redis-deployment.yaml 
+deployment.apps/redis created
+$ curl 209.38.243.80:32147/api/v1/info  
+{"message":"Counter","hostname":"python-67db9879c9-5pg7g","value":"5"}
+$ kubectl get pv, pvc                  
+error: arguments in resource/name form must have a single resource and name
+$ kubectl get pv,pvc 
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM               STORAGECLASS        REASON   AGE
+persistentvolume/pvc-5808f080-dce6-4e89-893f-40f7829c13d4   10Mi       RWO            Delete           Bound    default/redis-pvc   microk8s-hostpath            17h
+
+NAME                              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
+persistentvolumeclaim/redis-pvc   Bound    pvc-5808f080-dce6-4e89-893f-40f7829c13d4   10Mi       RWO            microk8s-hostpath   17h
+$ kubectl describe persistentvolume/pvc-5808f080-dce6-4e89-893f-40f7829c13d4
+Name:              pvc-5808f080-dce6-4e89-893f-40f7829c13d4
+Labels:            <none>
+Annotations:       hostPathProvisionerIdentity: workshop-6
+                   pv.kubernetes.io/provisioned-by: microk8s.io/hostpath
+Finalizers:        [kubernetes.io/pv-protection]
+StorageClass:      microk8s-hostpath
+Status:            Bound
+Claim:             default/redis-pvc
+Reclaim Policy:    Delete
+Access Modes:      RWO
+VolumeMode:        Filesystem
+Capacity:          10Mi
+Node Affinity:     
+  Required Terms:  
+    Term 0:        kubernetes.io/hostname in [workshop-6]
+Message:           
+Source:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/snap/microk8s/common/default-storage/default-redis-pvc-pvc-5808f080-dce6-4e89-893f-40f7829c13d4
+    HostPathType:  DirectoryOrCreate
+Events:            <none>
+$

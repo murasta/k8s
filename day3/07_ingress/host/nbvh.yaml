@@ -7,7 +7,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: bug.127.0.0.1.nip.io
+  - host: bug.209.38.243.80.nip.io
     http:
       paths:
       - path: /?(.*)
@@ -17,7 +17,7 @@ spec:
             name: helloapp-nbvh-nohost-svc
             port:
               number: 8080
-  - host: demo.127.0.0.1.nip.io
+  - host: demo.209.38.243.80.nip.io
     http:
       paths:
       - path: /host/?(.*)

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+        project: workshop
+    spec:
+      containers:
+      - name: api
+        image: krajewskim/backend
+        resources: {}
+        ports:
+        - containerPort: 3001
+          name: api
+        envFrom:
+        - configMapRef:
+            name: web-conf

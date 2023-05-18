@@ -10,7 +10,7 @@ spec:
   volumes:
   - name: host-path
     hostPath:
-      path: /files
+      path: /etc
   containers:
   - name: host-path-pod-bb
     image: busybox
@@ -18,7 +18,4 @@ spec:
     volumeMounts:
     - name: host-path
       mountPath: /pod-empty/
-    resources:
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
+    resources: {}

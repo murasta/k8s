@@ -1,0 +1,80 @@
+$ kubectl delete all,pv,pvc --all 
+pod "my-python-7fb5446d8c-mv9gw" deleted
+pod "redis-7cfff47779-4t9xt" deleted
+pod "python-5854cbc978-fxhp2" deleted
+pod "redis-deployment-6cccd495c7-6dvb7" deleted
+pod "producer-5h2mm" deleted
+pod "parallel-consumer-7k225" deleted
+pod "parallel-consumer-f4g6q" deleted
+pod "parallel-consumer-fdtlz" deleted
+pod "parallel-consumer-xzlvp" deleted
+pod "parallel-consumer-pjmqs" deleted
+service "kubernetes" deleted
+service "db-svc" deleted
+service "python-service" deleted
+service "redis-service" deleted
+deployment.apps "redis" deleted
+deployment.apps "python" deleted
+deployment.apps "redis-deployment" deleted
+deployment.apps "my-python" deleted
+job.batch "producer" deleted
+job.batch "parallel-consumer" deleted
+$ pwd
+/Users/katmur/git/k8s/day3/02_cronjob/task
+$ kubectl apply -f .
+cronjob.batch/python-counter created
+deployment.apps/python created
+service/python-service created
+deployment.apps/redis created
+service/redis-service created
+$ kubectl get all
+NAME                                READY   STATUS      RESTARTS   AGE
+pod/redis-7cfff47779-926xx          1/1     Running     0          39s
+pod/python-67db9879c9-ds8bl         1/1     Running     0          39s
+pod/python-counter-28074100-77xfg   0/1     Completed   0          13s
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes       ClusterIP   10.152.183.1    <none>        443/TCP        100s
+service/python-service   NodePort    10.152.183.53   <none>        80:31217/TCP   39s
+service/redis-service    ClusterIP   10.152.183.63   <none>        6379/TCP       39s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis    1/1     1            1           39s
+deployment.apps/python   1/1     1            1           39s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-7cfff47779    1         1         1       39s
+replicaset.apps/python-67db9879c9   1         1         1       39s
+
+NAME                           SCHEDULE    SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/python-counter   * * * * *   False     0        13s             40s
+
+NAME                                COMPLETIONS   DURATION   AGE
+job.batch/python-counter-28074100   1/1           8s         13s
+$ kubectl get all
+NAME                                READY   STATUS      RESTARTS   AGE
+pod/redis-7cfff47779-926xx          1/1     Running     0          53s
+pod/python-67db9879c9-ds8bl         1/1     Running     0          53s
+pod/python-counter-28074100-77xfg   0/1     Completed   0          27s
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes       ClusterIP   10.152.183.1    <none>        443/TCP        114s
+service/python-service   NodePort    10.152.183.53   <none>        80:31217/TCP   53s
+service/redis-service    ClusterIP   10.152.183.63   <none>        6379/TCP       53s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis    1/1     1            1           53s
+deployment.apps/python   1/1     1            1           53s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-7cfff47779    1         1         1       53s
+replicaset.apps/python-67db9879c9   1         1         1       53s
+
+NAME                           SCHEDULE    SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+cronjob.batch/python-counter   * * * * *   False     0        27s             54s
+
+NAME                                COMPLETIONS   DURATION   AGE
+job.batch/python-counter-28074100   1/1           8s         28s
+$ curl 209.38.243.80:31217/api/v1/info
+{"message":"Counter","hostname":"python-67db9879c9-ds8bl","value":"2"}
+$ 

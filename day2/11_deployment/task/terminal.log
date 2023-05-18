@@ -1,0 +1,20 @@
+$ kubectl apply -f .  
+deployment.apps/python created
+service/python-service configured
+deployment.apps/redis configured
+service/redis-service created
+$ kubectl get service  
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes       ClusterIP   10.152.183.1     <none>        443/TCP        8m4s
+db-svc           ClusterIP   10.152.183.199   <none>        6379/TCP       4m58s
+python-service   NodePort    10.152.183.41    <none>        80:32606/TCP   4m58s
+redis-service    ClusterIP   10.152.183.231   <none>        6379/TCP       11s
+$ curl 209.38.243.80:32606/api/v1/info
+{"message":"Counter","hostname":"python-5854cbc978-fxhp2","value":0}
+$ curl -XPOST 209.38.243.80:32606/api/v1/info
+{"message":"OK","hostname":"python-5854cbc978-fxhp2"}
+$ curl -XPOST 209.38.243.80:32606/api/v1/info
+{"message":"OK","hostname":"python-5854cbc978-fxhp2"}
+$ curl 209.38.243.80:32606/api/v1/info       
+{"message":"Counter","hostname":"python-5854cbc978-fxhp2","value":"2"}
+$ 

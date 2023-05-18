@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-python
+  template:
+    metadata:
+      labels:
+        app: my-python
+    spec:
+      containers:
+      - name: my-python
+        image: krajewskim/python-api:new
+        env:
+          - name: LOG_LEVEL
+            value: "DEBUG"
+          - name: REDIS_HOST
+            value: "db-svc"

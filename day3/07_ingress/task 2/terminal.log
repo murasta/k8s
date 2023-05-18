@@ -1,0 +1,30 @@
+$ kubectl apply -f .                  
+configmap/python-api-cm created
+ingress.networking.k8s.io/python-api created
+cronjob.batch/python-counter created
+deployment.apps/python created
+service/python-service created
+deployment.apps/redis created
+service/redis-service created
+persistentvolumeclaim/redis-pvc created
+$ curl python.209.38.243.80.nip.io/healthz
+<html>
+<head><title>503 Service Temporarily Unavailable</title></head>
+<body>
+<center><h1>503 Service Temporarily Unavailable</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+$ kubectl get pod
+NAME                            READY   STATUS      RESTARTS   AGE
+mongo-6b68b6f75d-d7hfz          1/1     Running     0          18m
+web-6f8d9bcdc6-tj9dm            1/1     Running     0          18m
+api-6bd9dc6df-mqbnr             1/1     Running     0          18m
+redis-b95bb9d4d-qghkf           1/1     Running     0          105s
+python-768456d87-rmpd5          1/1     Running     0          105s
+python-counter-28074154-jznzg   0/1     Completed   0          9s
+$ curl python.209.38.243.80.nip.io/healthz
+{"message":"Service is OK","hostname":"python-768456d87-rmpd5"}
+$ curl python.209.38.243.80.nip.io/api/v1/info
+{"message":"Counter","hostname":"python-768456d87-rmpd5","value":"2"}
+$ 

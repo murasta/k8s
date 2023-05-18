@@ -1,0 +1,109 @@
+$ kubectl create configmap configuration --from-file=./
+configmap/configuration created
+$ kubectl get configmap/configuration -o yaml
+apiVersion: v1
+data:
+  README.md: |
+    ```sh
+    kubectl create configmap configuration --from-file=./
+    kubectl get configmap/configuration -o yaml
+    ```
+
+    # From env file
+    ```sh
+    kubectl create configmap fromenv --from-env-file=env-file-example
+    kubectl get configmap/fromenv -o json
+    kubectl get configmap/fromenv -o yaml
+    ```
+    # Data as file
+
+    ```sh
+    kubectl create configmap test-config --from-file=<my-key-name>=<path-to-file>
+    kubectl create configmap test-config --from-file=s.json=service.json
+    kubectl get configmap/test-config -o yaml
+    ```
+    # Create pods
+
+    ```sh
+    kubectl apply -f pod-config.yaml
+    kubectl logs configmap-pod
+    kubectl logs configmap-pod | grep line
+    ```
+
+    ```sh
+    kubectl apply -f pod-config-volume.yaml
+    kubectl logs configmap-volume-pod
+    ```
+
+    # Autoupdates for mounted configmaps
+    ```sh
+    kubectl edit configmap configuration
+    # change service-b.config
+    kubectl logs -f configmap-volume-pod
+    ```
+  env-file-example: |
+    # won't go to configmap
+    this=will
+    line=2
+  service-b.config: |
+    schedule: 21:00:00
+    restart: true
+  service.config: |-
+    schedule: 20:00:00
+    restart: false
+  service.json: "{\n\t\t  \"schedule\":\"19:00:00\",\n\t\t  \"restart\":false\n}\n"
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-05-18T06:51:24Z"
+  name: configuration
+  namespace: default
+  resourceVersion: "314944"
+  uid: 78c2b5ba-cae0-4e26-a2d5-428c06c1f04d
+$ kubectl create configmap fromenv --from-env-file=env-file-example
+configmap/fromenv created
+$ kubectl get configmap/fromenv -o json
+{
+    "apiVersion": "v1",
+    "data": {
+        "line": "2",
+        "this": "will"
+    },
+    "kind": "ConfigMap",
+    "metadata": {
+        "creationTimestamp": "2023-05-18T07:01:29Z",
+        "name": "fromenv",
+        "namespace": "default",
+        "resourceVersion": "316099",
+        "uid": "68a7a44a-362e-40ca-8236-9bb7202a4f97"
+    }
+}
+$ kubectl get configmap/fromenv -o yaml
+apiVersion: v1
+data:
+  line: "2"
+  this: will
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-05-18T07:01:29Z"
+  name: fromenv
+  namespace: default
+  resourceVersion: "316099"
+  uid: 68a7a44a-362e-40ca-8236-9bb7202a4f97
+$ kubectl create configmap test-config --from-file=<my-key-name>=<path-to-file>
+zsh: parse error near `\n'
+$ kubectl create configmap test-config --from-file=s.json=service.json
+configmap/test-config created
+$ kubectl get configmap/test-config -o yaml
+apiVersion: v1
+data:
+  s.json: "{\n\t\t  \"schedule\":\"19:00:00\",\n\t\t  \"restart\":false\n}\n"
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2023-05-18T07:04:04Z"
+  name: test-config
+  namespace: default
+  resourceVersion: "316397"
+  uid: 0726a1e9-94b0-400a-be50-f106c1111889
+$ kubectl apply -f pod-config.yaml
+error: the path "pod-config.yaml" does not exist
+$ 

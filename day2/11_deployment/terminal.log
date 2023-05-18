@@ -1,0 +1,240 @@
+$ kubectl apply -f deployment.yaml
+deployment.apps/nginx-deployment created
+$ kubectl get all                        
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/pkad-health                         1/1     Running   0          37m
+pod/my-python                           0/1     Running   0          20m
+pod/replicate-my-app-x82md              1/1     Running   0          16m
+pod/replicate-my-app-8wccq              1/1     Running   0          7m20s
+pod/replicate-my-app-lk2fn              1/1     Running   0          7m
+pod/nginx-deployment-5bf45dd795-9f7r2   1/1     Running   0          34s
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes       ClusterIP   10.152.183.1     <none>        443/TCP          21h
+service/myapp-pod        NodePort    10.152.183.200   <none>        80:32023/TCP     19h
+service/my-app-service   NodePort    10.152.183.134   <none>        80:31432/TCP     19h
+service/my-python        NodePort    10.152.183.40    <none>        5002:31143/TCP   18h
+service/pkad             NodePort    10.152.183.229   <none>        8080:32595/TCP   37m
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx-deployment   1/1     1            1           34s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/replicate-my-app              3         3         3       16m
+replicaset.apps/nginx-deployment-5bf45dd795   1         1         1       34s
+$ kubectl scale deployment/nginx-deployment --replicas=0
+deployment.apps/nginx-deployment scaled
+$ kubectl get all                                       
+NAME                         READY   STATUS    RESTARTS   AGE
+pod/pkad-health              1/1     Running   0          40m
+pod/my-python                0/1     Running   0          23m
+pod/replicate-my-app-x82md   1/1     Running   0          19m
+pod/replicate-my-app-8wccq   1/1     Running   0          10m
+pod/replicate-my-app-lk2fn   1/1     Running   0          9m56s
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes       ClusterIP   10.152.183.1     <none>        443/TCP          21h
+service/myapp-pod        NodePort    10.152.183.200   <none>        80:32023/TCP     19h
+service/my-app-service   NodePort    10.152.183.134   <none>        80:31432/TCP     19h
+service/my-python        NodePort    10.152.183.40    <none>        5002:31143/TCP   18h
+service/pkad             NodePort    10.152.183.229   <none>        8080:32595/TCP   40m
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx-deployment   0/0     0            0           3m30s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/replicate-my-app              3         3         3       19m
+replicaset.apps/nginx-deployment-5bf45dd795   0         0         0       3m30s
+$ kubectl rollout history deployments/nginx-deployment
+deployment.apps/nginx-deployment 
+REVISION  CHANGE-CAUSE
+1         <none>
+
+$ kubectl apply -f deployment.yaml
+deployment.apps/nginx-deployment configured
+$ kubectl rollout status deployment/nginx-deployment
+deployment "nginx-deployment" successfully rolled out
+$ kubectl rollout history deployment/nginx-deployment --revision=1
+deployment.apps/nginx-deployment with revision #1
+Pod Template:
+  Labels:       app=myapp
+        pod-template-hash=5bf45dd795
+  Containers:
+   myapp-container:
+    Image:      nginx
+    Port:       80/TCP
+    Host Port:  0/TCP
+    Environment:        <none>
+    Mounts:     <none>
+  Volumes:      <none>
+
+$ kubectl get all                                           
+NAME                                   READY   STATUS    RESTARTS   AGE
+pod/pkad-health                        1/1     Running   0          43m
+pod/my-python                          0/1     Running   0          26m
+pod/replicate-my-app-x82md             1/1     Running   0          22m
+pod/replicate-my-app-8wccq             1/1     Running   0          13m
+pod/replicate-my-app-lk2fn             1/1     Running   0          12m
+pod/nginx-deployment-f6b5f4664-mqqgv   1/1     Running   0          60s
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/kubernetes       ClusterIP   10.152.183.1     <none>        443/TCP          21h
+service/myapp-pod        NodePort    10.152.183.200   <none>        80:32023/TCP     19h
+service/my-app-service   NodePort    10.152.183.134   <none>        80:31432/TCP     19h
+service/my-python        NodePort    10.152.183.40    <none>        5002:31143/TCP   18h
+service/pkad             NodePort    10.152.183.229   <none>        8080:32595/TCP   43m
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx-deployment   1/1     1            1           6m24s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/replicate-my-app              3         3         3       22m
+replicaset.apps/nginx-deployment-5bf45dd795   0         0         0       6m24s
+replicaset.apps/nginx-deployment-f6b5f4664    1         1         1       60s
+$ kubectl rollout history deployment/nginx-deployment --revision=1
+deployment.apps/nginx-deployment with revision #1
+Pod Template:
+  Labels:       app=myapp
+        pod-template-hash=5bf45dd795
+  Containers:
+   myapp-container:
+    Image:      nginx
+    Port:       80/TCP
+    Host Port:  0/TCP
+    Environment:        <none>
+    Mounts:     <none>
+  Volumes:      <none>
+
+$ kubectl rollout history deployment/nginx-deployment --revision=2
+deployment.apps/nginx-deployment with revision #2
+Pod Template:
+  Labels:       app=myapp
+        pod-template-hash=f6b5f4664
+  Containers:
+   myapp-container:
+    Image:      nginx
+    Port:       80/TCP
+    Host Port:  0/TCP
+    Environment:
+      TEST_ENV: working
+    Mounts:     <none>
+  Volumes:      <none>
+
+$ kubectl annotate deployment/nginx-deployment kubernetes.io/change-cause="env updated"
+deployment.apps/nginx-deployment annotated
+$ kubectl rollout history deployments/nginx-deployment                          
+deployment.apps/nginx-deployment 
+REVISION  CHANGE-CAUSE
+1         <none>
+2         env updated
+
+$ kubectl get pods
+NAME                               READY   STATUS    RESTARTS   AGE
+pkad-health                        1/1     Running   0          47m
+my-python                          0/1     Running   0          30m
+replicate-my-app-x82md             1/1     Running   0          26m
+replicate-my-app-8wccq             1/1     Running   0          16m
+replicate-my-app-lk2fn             1/1     Running   0          16m
+nginx-deployment-f6b5f4664-mqqgv   1/1     Running   0          4m36s
+$ kubectl get pods -l app=myapp -o jsonpath='{.items[0].metadata.name}'
+replicate-my-app-x82md%                                                                                                            
+$ kubectl get pods -l app=myapp -o jsonpath='{.items[0].metadata.name}'
+replicate-my-app-x82md%                                                                                                            
+$ kubectl scale rs replicate-my-app --replicas=0
+replicaset.apps/replicate-my-app scaled
+$ kubectl get pods -l app=myapp -o jsonpath='{.items[0].metadata.name}'
+nginx-deployment-f6b5f4664-mqqgv%                                                                                                  
+$ kubectl get pods                                                                     
+NAME                               READY   STATUS    RESTARTS   AGE
+pkad-health                        1/1     Running   0          50m
+my-python                          0/1     Running   0          33m
+nginx-deployment-f6b5f4664-mqqgv   1/1     Running   0          7m25s
+$ kubectl exec -ti $(kubectl get pods -l app=myapp -o jsonpath='{.items[0].metadata.name}') -- env | grep TEST_ENV
+TEST_ENV=working
+$ kubectl rollout undo deployment/nginx-deployment
+deployment.apps/nginx-deployment rolled back
+$ kubectl annotate deployment/nginx-deployment kubernetes.io/change-cause="env removed"
+deployment.apps/nginx-deployment annotated
+$ kubectl rollout history deployments/nginx-deployment
+deployment.apps/nginx-deployment 
+REVISION  CHANGE-CAUSE
+2         env updated
+3         env removed
+
+$ kubectl exec -ti $(kubectl get pods -l app=myapp -o jsonpath='{.items[0].metadata.name}') -- env | grep TEST_ENV
+$ kubectl exec -ti $(kubectl get pods -l app=myapp -o jsonpath='{.items[0].metadata.name}') -- env | grep TEST_ENV
+$ kubectl exec -ti $(kubectl get pods -l app=myapp -o jsonpath='{.items[0].metadata.name}') -- env | grep TEST_ENV
+$ kubectl rollout undo deployment/nginx-deployment --to-revision=2
+deployment.apps/nginx-deployment rolled back
+$ kubectl exec -ti $(kubectl get pods -l app=myapp -o jsonpath='{.items[0].metadata.name}') -- env | grep TEST_ENV
+TEST_ENV=working
+$ kubectl describe svc my-app-service
+Name:                     my-app-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=myapp
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.152.183.134
+IPs:                      10.152.183.134
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  31432/TCP
+Endpoints:                10.1.216.91:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+$ kubectl scale deployment nginx-deployment --replicas=3
+deployment.apps/nginx-deployment scaled
+$ kubectl describe svc my-app-service
+Name:                     my-app-service
+Namespace:                default
+Labels:                   <none>
+Annotations:              <none>
+Selector:                 app=myapp
+Type:                     NodePort
+IP Family Policy:         SingleStack
+IP Families:              IPv4
+IP:                       10.152.183.134
+IPs:                      10.152.183.134
+Port:                     <unset>  80/TCP
+TargetPort:               80/TCP
+NodePort:                 <unset>  31432/TCP
+Endpoints:                10.1.216.91:80,10.1.216.92:80,10.1.216.93:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+$ kubectl logs -l app=myapp
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+2023/05/17 07:51:19 [notice] 1#1: using the "epoll" event method
+2023/05/17 07:51:19 [notice] 1#1: nginx/1.23.4
+2023/05/17 07:51:19 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+2023/05/17 07:51:19 [notice] 1#1: OS: Linux 5.4.0-122-generic
+2023/05/17 07:51:19 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 65536:65536
+2023/05/17 07:51:19 [notice] 1#1: start worker processes
+2023/05/17 07:51:19 [notice] 1#1: start worker process 28
+2023/05/17 07:51:19 [notice] 1#1: start worker process 29
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+2023/05/17 07:52:18 [notice] 1#1: using the "epoll" event method
+2023/05/17 07:52:18 [notice] 1#1: nginx/1.23.4
+2023/05/17 07:52:18 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+2023/05/17 07:52:18 [notice] 1#1: OS: Linux 5.4.0-122-generic
+2023/05/17 07:52:18 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 65536:65536
+2023/05/17 07:52:18 [notice] 1#1: start worker processes
+2023/05/17 07:52:18 [notice] 1#1: start worker process 28
+2023/05/17 07:52:18 [notice] 1#1: start worker process 29
+/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
+/docker-entrypoint.sh: Configuration complete; ready for start up
+2023/05/17 07:52:19 [notice] 1#1: using the "epoll" event method
+2023/05/17 07:52:19 [notice] 1#1: nginx/1.23.4
+2023/05/17 07:52:19 [notice] 1#1: built by gcc 10.2.1 20210110 (Debian 10.2.1-6) 
+2023/05/17 07:52:19 [notice] 1#1: OS: Linux 5.4.0-122-generic
+2023/05/17 07:52:19 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 65536:65536
+2023/05/17 07:52:19 [notice] 1#1: start worker processes
+2023/05/17 07:52:19 [notice] 1#1: start worker process 29
+2023/05/17 07:52:19 [notice] 1#1: start worker process 30
+$ kubectl scale rs replicate-my-app --replicas=0

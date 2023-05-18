@@ -1,0 +1,47 @@
+$ kubectl get namespaces
+NAME              STATUS   AGE
+kube-system       Active   23h
+kube-public       Active   23h
+kube-node-lease   Active   23h
+default           Active   23h
+ingress           Active   23h
+$ kubectl create namespace workshops
+namespace/workshops created
+$ kubectl apply -f . -n workshops
+deployment.apps/python created
+service/python-service created
+deployment.apps/redis created
+service/redis-service created
+$ kubectl get all -n workshops      
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/redis-7cfff47779-x6gpt    1/1     Running   0          15s
+pod/python-5854cbc978-bflwj   1/1     Running   0          16s
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+service/python-service   NodePort    10.152.183.245   <none>        80:32603/TCP   17s
+service/redis-service    ClusterIP   10.152.183.35    <none>        6379/TCP       16s
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis    1/1     1            1           17s
+deployment.apps/python   1/1     1            1           17s
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-7cfff47779    1         1         1       17s
+replicaset.apps/python-5854cbc978   1         1         1       17s
+$ kubectl get all -n workshops      
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/redis-7cfff47779-x6gpt    1/1     Running   0          109m
+pod/python-5854cbc978-bflwj   1/1     Running   0          109m
+
+NAME                     TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+service/python-service   NodePort    10.152.183.245   <none>        80:32603/TCP   109m
+service/redis-service    ClusterIP   10.152.183.35    <none>        6379/TCP       109m
+
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/redis    1/1     1            1           109m
+deployment.apps/python   1/1     1            1           109m
+
+NAME                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/redis-7cfff47779    1         1         1       109m
+replicaset.apps/python-5854cbc978   1         1         1       109m
+$ 

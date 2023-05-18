@@ -1,0 +1,35 @@
+$ kubectl delete all --all                          
+pod "myapp-pod" deleted
+pod "pkad-health" deleted
+pod "my-python" deleted
+service "kubernetes" deleted
+service "myapp-pod" deleted
+service "my-app-service" deleted
+service "my-python" deleted
+service "pkad" deleted
+$ kubectl apply -f .      
+deployment.apps/my-python created
+service/python-service created
+deployment.apps/redis created
+service/db-svc created
+$ kubectl get service             
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes       ClusterIP   10.152.183.1     <none>        443/TCP          3m44s
+python-service   NodePort    10.152.183.41    <none>        5002:32606/TCP   38s
+db-svc           ClusterIP   10.152.183.199   <none>        6379/TCP         38s
+$ kubectl get pod
+NAME                         READY   STATUS    RESTARTS   AGE
+my-python-7fb5446d8c-mv9gw   1/1     Running   0          81s
+redis-7f9f9c8fc7-b4wv5       1/1     Running   0          81s
+$ kubectl get nodes -o wide
+NAME         STATUS   ROLES    AGE     VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+workshop-6   Ready    <none>   2d11h   v1.26.4   209.38.243.80   <none>        Ubuntu 20.04.4 LTS   5.4.0-122-generic   containerd://1.6.15
+$ curl 209.38.243.80:32606/api/v1/info
+{"message":"Counter","hostname":"my-python-7fb5446d8c-mv9gw","value":0}
+$ curl -XPOST 209.38.243.80:32606/api/v1/info
+{"message":"OK","hostname":"my-python-7fb5446d8c-mv9gw"}
+$ curl -XPOST 209.38.243.80:32606/api/v1/info
+{"message":"OK","hostname":"my-python-7fb5446d8c-mv9gw"}
+$ curl 209.38.243.80:32606/api/v1/info       
+{"message":"Counter","hostname":"my-python-7fb5446d8c-mv9gw","value":"2"}
+$ 
