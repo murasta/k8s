@@ -1,0 +1,61 @@
+$ docker container run -p 5001:5000 -d registry:2
+Unable to find image 'registry:2' locally
+2: Pulling from library/registry
+8a49fdb3b6a5: Already exists 
+58116d8bf569: Pull complete 
+4cb4a93be51c: Pull complete 
+cbdeff65a266: Pull complete 
+6b102b34ed3d: Pull complete 
+Digest: sha256:20d084723c951e377e1a2a5b3df316173a845e300d57ccdd8ae3ab2da3439746
+Status: Downloaded newer image for registry:2
+705ccbbeca15a962082218baf8696359beadf51c7a828b44300fa7f8c41fe776
+$ curl localhost:5001/v2/_catalog                
+{"repositories":[]}
+$ docker image ls           
+REPOSITORY                       TAG       IMAGE ID       CREATED        SIZE
+my-python                        latest    d2e0e0e38e61   11 hours ago   79MB
+my-nginx                         2         2e2e3e65cb7a   11 hours ago   8.8MB
+my-nginx                         1         2ed2bdd660f0   11 hours ago   8.8MB
+my-nginx                         latest    03eba8ebae8d   11 hours ago   8.8MB
+<none>                           <none>    4b311a53e0da   11 hours ago   8.8MB
+redis                            alpine    f37f9f678836   4 days ago     30.2MB
+registry                         2         65f3b3441f04   4 days ago     24MB
+my-01_volume_ls                  latest    6f344d7d856d   6 days ago     7.33MB
+my-hello-world                   latest    c3d0021ccdc1   6 days ago     7.33MB
+hello-world                      latest    9c7a54a9a43c   11 days ago    13.3kB
+nginx                            latest    448a08f1d2f9   12 days ago    142MB
+redis                            latest    116cad43b6af   12 days ago    117MB
+krajewskim/python-api            new       ba214c908858   7 weeks ago    80.6MB
+solution-web                     latest    67d3359a0187   4 years ago    109MB
+01_build-web                     latest    e7bbfeb625df   4 years ago    109MB
+monitoringartist/docker-killer   latest    6ada5791f177   5 years ago    10.5MB
+$ docker image tag my-nginx:1 127.0.0.1:5001/my-nginx:1
+$ docker image ls                                      
+REPOSITORY                       TAG       IMAGE ID       CREATED        SIZE
+my-python                        latest    d2e0e0e38e61   11 hours ago   79MB
+127.0.0.1:5001/my-nginx          1         2ed2bdd660f0   11 hours ago   8.8MB
+my-nginx                         1         2ed2bdd660f0   11 hours ago   8.8MB
+my-nginx                         2         2e2e3e65cb7a   11 hours ago   8.8MB
+my-nginx                         latest    03eba8ebae8d   11 hours ago   8.8MB
+<none>                           <none>    4b311a53e0da   11 hours ago   8.8MB
+redis                            alpine    f37f9f678836   4 days ago     30.2MB
+registry                         2         65f3b3441f04   4 days ago     24MB
+my-hello-world                   latest    c3d0021ccdc1   6 days ago     7.33MB
+my-01_volume_ls                  latest    6f344d7d856d   6 days ago     7.33MB
+hello-world                      latest    9c7a54a9a43c   11 days ago    13.3kB
+nginx                            latest    448a08f1d2f9   12 days ago    142MB
+redis                            latest    116cad43b6af   12 days ago    117MB
+krajewskim/python-api            new       ba214c908858   7 weeks ago    80.6MB
+01_build-web                     latest    e7bbfeb625df   4 years ago    109MB
+solution-web                     latest    67d3359a0187   4 years ago    109MB
+monitoringartist/docker-killer   latest    6ada5791f177   5 years ago    10.5MB
+
+$ docker push 127.0.0.1:5001/my-nginx:1
+The push refers to repository [127.0.0.1:5001/my-nginx]
+53382eec983d: Pushed 
+4dd04e07d12d: Pushed 
+5d712797c00d: Pushed 
+8e6c974e4afe: Pushed 
+06f7ab93c0b0: Pushed 
+bb01bd7e32b5: Pushed 
+1: digest: sha256:bb7bce0c7901fa85dedaec07f64c4f846a9546b3412cc863a092b687c51523d0 size: 1566

@@ -1,0 +1,42 @@
+$ docker volume ls               
+DRIVER    VOLUME NAME
+local     8b952c099f49abef3888272b5abcf873bd6024cc90c1300450ee00100e7d7d2e
+$ docker image build -t 01_volume_ls -f 01_volume_ls/Dockerfile 01_volume_ls/
+[+] Building 3.4s (6/6) FINISHED                                                                                         
+ => [internal] load build definition from Dockerfile                                                                0.0s
+ => => transferring dockerfile: 96B                                                                                 0.0s
+ => [internal] load .dockerignore                                                                                   0.0s
+ => => transferring context: 2B                                                                                     0.0s
+ => [internal] load metadata for docker.io/library/alpine:latest                                                    3.3s
+ => [auth] library/alpine:pull token for registry-1.docker.io                                                       0.0s
+ => CACHED [1/1] FROM docker.io/library/alpine@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c  0.0s
+ => exporting to image                                                                                              0.0s
+ => => exporting layers                                                                                             0.0s
+ => => writing image sha256:6f344d7d856d2811a790c85e2c2621823381ec272c2213bd109abf47ce1ad158                        0.0s
+ => => naming to docker.io/library/01_volume_ls                                                                     0.0s
+$ docker run -d 01_volume_ls
+e341d74f41c2efe062f78b36cc354efc47fe65ba94cec7e1de837220ada7e140
+$ touch /tmp/something
+$ docker run -v /tmp:/data 01_volume_ls /data 
+8856db0846d5310b9852459d72f91525-{87A94AB0-E370-4cde-98D3-ACC110C5967D}
+something
+$ docker volume create my-volume
+my-volume
+$ docker volume ls
+DRIVER    VOLUME NAME
+local     8b952c099f49abef3888272b5abcf873bd6024cc90c1300450ee00100e7d7d2e
+local     423d02774899fe5b001439745b85552923fbd706e841dbad78be095951fbab40
+local     my-volume
+$ docker container run -v my-volume:/data:ro -P -d my-nginx:2
+a201d6ba626b955c2423baf31a1bf8a54d350962b81178f8e0012f6d3b4ae034
+$ docker container run -v my-volume:/data -P -d my-nginx:2 
+3e6e1646eb061083ef092e1bba7d925dacc6002e41100955d475de060a169929
+$ docker container exec -ti 3e6e1646eb061083ef092e1bba7d925dacc6002e41100955d475de060a169929 /bin/sh
+/usr/html # touch /data/newfile
+/usr/html # exit
+$ docker container exec -ti a201 /bin/sh
+/usr/html # rm /data/newfile
+rm: remove '/data/newfile'? y
+rm: can't remove '/data/newfile': Read-only file system
+/usr/html # exit
+$ 

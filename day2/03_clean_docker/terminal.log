@@ -1,0 +1,145 @@
+$ docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Total reclaimed space: 0B
+$ docker image prune
+WARNING! This will remove all dangling images.
+Are you sure you want to continue? [y/N] y
+Total reclaimed space: 0B
+$ docker system prune
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - all dangling build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted Networks:
+python-net
+solution_default
+
+Deleted build cache objects:
+6kmcplyh0nljyhxp1y2y26kgl
+p0eer4g2u9xun4er4v3rviok5
+q3dzkgcjspsgq8523u0ht695s
+t67xe1owaagyhjrr5w7117r4w
+lj2hszoqmcb8h7owb2zeh99zv
+u70074yul9ne7ywx3qf22iuz1
+2kyxll79ts5dx8vdwi0nbi20w
+9fcmdf3bootwmney7gb1ftpzl
+x9vnr4q2ccgm9yftibqj7shgp
+adyalkpifk0sd9d3gr6l618cj
+qhk1591269pav4zxevjwqxy7b
+zyji0e4qkla14p3k7q7gt13aa
+p34hs2t6bdd5rbzins8hwy1wd
+iwu5n8s8yg40crf9rbpzw1nyj
+tdwec9ekjs2uwmffqepekyrdx
+whje7sqg7mj28py1bgeleiegc
+r262zuy6e08xohcch3b9brad4
+oai18ihztsntg8hv4otv5k1i2
+dd3hkwc3jkuc8i7l0eeimgo6m
+7fc4zn7skdanyskx1tntmrhyn
+m6t9k85drzgwsr8rh6a5ze1nt
+mln6ukhpzjn4jkm7b9i2a71j9
+nunjb3gq1iaef2esm70nn2n52
+phbetqnh7mtz4ebe0f59u8g0v
+ldse3bkyt9p23dy537fz3yqsb
+lj29hhs28vg1l4dtx1di2c8lo
+5mlg1a4h79qzd0v2p72xoku46
+jnzjfaqdo0zi6q449brbktekb
+766d59vuk3wf962yb8qf9oe40
+hiyc1mpkmu2gw2aatli2c4e5b
+0nmdur71xebw4ora2i6kecjpu
+
+Total reclaimed space: 27.1MB
+$ docker rm -f $(docker ps -qa)
+f9e5d4c42d01
+$ docker container prune       
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Total reclaimed space: 0B
+$ docker image prune           
+WARNING! This will remove all dangling images.
+Are you sure you want to continue? [y/N] y
+Total reclaimed space: 0B
+$ docker system prune          
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - all dangling build cache
+
+Are you sure you want to continue? [y/N] y
+Total reclaimed space: 0B
+$ docker image ls   
+REPOSITORY                TAG       IMAGE ID       CREATED       SIZE
+127.0.0.1:5001/my-nginx   2         b2939cdf6f94   2 hours ago   8.8MB
+my-nginx                  2         b2939cdf6f94   2 hours ago   8.8MB
+registry                  2         65f3b3441f04   7 days ago    24MB
+$ docker image rm -f $(docker image ls -q)
+Untagged: 127.0.0.1:5001/my-nginx:2
+Untagged: 127.0.0.1:5001/my-nginx@sha256:664f24ed85dd744bd0ad65757955fb7fa48bf579cae20ccecddb9fdc5ea5d875
+Untagged: my-nginx:2
+Deleted: sha256:b2939cdf6f947e0bb463cbc3b0e66556b090ce4c8681bf68d1e160eca74e4b1b
+Untagged: registry:2
+Untagged: registry@sha256:20d084723c951e377e1a2a5b3df316173a845e300d57ccdd8ae3ab2da3439746
+Deleted: sha256:65f3b3441f044d142ca365389fe0532900b4f4c7ffc47cb65f7bc7bd45857f06
+Deleted: sha256:064051c3a2a77373c0e25b6be4dada18268a3431db567ef299bc6db2dfec1ff1
+Deleted: sha256:b800adaafd3ce33dfcb13730ef43bb7a7483ed77b1c1d2c5354c6610028370fa
+Deleted: sha256:53f461ca2fa072b83247906863d62d1abee86acba06b84504c19c58e9ff9d91a
+Deleted: sha256:a1f1bff6ca971672d804bc9aeb5e762c21fd9e4390478ef6d12b96ea450c3e58
+Error response from daemon: No such image: b2939cdf6f94:latest
+$ docker image ls                         
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+$ docker container ls 
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+$ docker network ls   
+NETWORK ID     NAME      DRIVER    SCOPE
+7e122427830e   bridge    bridge    local
+3fa3be6add82   host      host      local
+4921952dde4b   none      null      local
+$ docker network rm $(docker network ls -q) 
+Error response from daemon: bridge is a pre-defined network and cannot be removed
+Error response from daemon: host is a pre-defined network and cannot be removed
+Error response from daemon: none is a pre-defined network and cannot be removed
+$ docker volume ls                          
+DRIVER    VOLUME NAME
+local     6c83460d31255bfaf3e863fe432690ce718032caa97a5c6e55242834aa602c2b
+local     8b952c099f49abef3888272b5abcf873bd6024cc90c1300450ee00100e7d7d2e
+local     90d7d41b87e32e6c3636f48bc9658410c9e0a5ba57aa86ab253953cda4417f47
+local     423d02774899fe5b001439745b85552923fbd706e841dbad78be095951fbab40
+local     1152aff55359f0a2808c27207825ba63457a0f51a4cb5a31bba74125f6849e4c
+local     9279aae7ecc076d2ae2a20bd9423e2cd0ac628d7bb7eda8467a6a742bb21ee01
+local     af6cada828b6800bc01c8bd4d079556e29a552387939c0dc265828a162768a2e
+local     my-volume
+$ docker volume rm $(docker volume ls -q) 
+6c83460d31255bfaf3e863fe432690ce718032caa97a5c6e55242834aa602c2b
+8b952c099f49abef3888272b5abcf873bd6024cc90c1300450ee00100e7d7d2e
+90d7d41b87e32e6c3636f48bc9658410c9e0a5ba57aa86ab253953cda4417f47
+423d02774899fe5b001439745b85552923fbd706e841dbad78be095951fbab40
+1152aff55359f0a2808c27207825ba63457a0f51a4cb5a31bba74125f6849e4c
+9279aae7ecc076d2ae2a20bd9423e2cd0ac628d7bb7eda8467a6a742bb21ee01
+af6cada828b6800bc01c8bd4d079556e29a552387939c0dc265828a162768a2e
+my-volume
+$ docker volume ls                        
+DRIVER    VOLUME NAME
+$ docker compose ls
+NAME                STATUS              CONFIG FILES
+$ docker system prune                       
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - all dangling build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted build cache objects:
+pscwb58zjzoew60doaihej2fn
+zlqkw25y26jz9j2a6jqn538t1
+jmqj9nl8uci10hyl0io7j47jn
+ihe2q248lizw0bstiiax4fxaj
+mwkvyn4antknxdg0fvwgi5sjp
+y6bhgjm602dujlpf5eg1jstuh
+
+Total reclaimed space: 1.47MB
+$ 

@@ -1,0 +1,234 @@
+$ docker compose -f ./my-python-compose.yml up -d python
+[+] Running 7/7
+ ✔ redis 6 layers [⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled                                                                   4.0s 
+   ✔ 8a49fdb3b6a5 Already exists                                                                                    0.0s 
+   ✔ 2121af5b35c8 Pull complete                                                                                     0.6s 
+   ✔ 13ce36f68149 Pull complete                                                                                     0.9s 
+   ✔ d0786890719f Pull complete                                                                                     1.2s 
+   ✔ e0001f8e7e31 Pull complete                                                                                     1.2s 
+   ✔ 4ea079d1c234 Pull complete                                                                                     1.3s 
+[+] Running 3/3
+ ✔ Network solution_default     Created                                                                             0.1s 
+ ✔ Container solution-redis-1   Started                                                                             0.8s 
+ ✔ Container solution-python-1  Started                                                                             1.0s 
+$ curl localhost:5002/api/v1/info   
+{"message":"Counter","hostname":"f00d65fad180","value":0}
+$ docker compose exec python wget -qO- web
+wget: bad address 'web'
+$ docker compose -f ./my-python-compose.yml up -d       
+[+] Building 6.6s (6/6) FINISHED                                                                                         
+ => [internal] load .dockerignore                                                                                   0.0s
+ => => transferring context: 2B                                                                                     0.0s
+ => [internal] load build definition from Dockerfile                                                                0.0s
+ => => transferring dockerfile: 54B                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/nginx:1.15.5                                                     2.7s
+ => [auth] library/nginx:pull token for registry-1.docker.io                                                        0.0s
+ => [1/1] FROM docker.io/library/nginx:1.15.5@sha256:b73f527d86e3461fd652f62cf47e7b375196063bbbd503e853af5be16597c  3.8s
+ => => resolve docker.io/library/nginx:1.15.5@sha256:b73f527d86e3461fd652f62cf47e7b375196063bbbd503e853af5be16597c  0.0s
+ => => sha256:a381f92f36de52ade5b5610ef1b354713f21902b2ef32abf8f5101daf686e6b4 203B / 203B                          0.3s
+ => => sha256:b73f527d86e3461fd652f62cf47e7b375196063bbbd503e853af5be16597cb2e 2.03kB / 2.03kB                      0.0s
+ => => sha256:d98b66402922eccdbee49ef093edb2d2c5001637bd291ae0a8cd21bb4c36bebe 948B / 948B                          0.0s
+ => => sha256:dbfc48660aeb7ef0ebd74b4a7e0822520aba5416556ee43acb9a6350372e516f 6.02kB / 6.02kB                      0.0s
+ => => sha256:f17d81b4b692f7e0d6c1176c86b81d9f2cb5ac5349703adca51c61debcfe413c 22.49MB / 22.49MB                    1.1s
+ => => sha256:d5c237920c394bda8bf1ef31b00bbde458f6978c159303e00d712a95c3f32a40 22.18MB / 22.18MB                    1.9s
+ => => extracting sha256:f17d81b4b692f7e0d6c1176c86b81d9f2cb5ac5349703adca51c61debcfe413c                           1.6s
+ => => extracting sha256:d5c237920c394bda8bf1ef31b00bbde458f6978c159303e00d712a95c3f32a40                           0.7s
+ => => extracting sha256:a381f92f36de52ade5b5610ef1b354713f21902b2ef32abf8f5101daf686e6b4                           0.0s
+ => exporting to image                                                                                              0.0s
+ => => exporting layers                                                                                             0.0s
+ => => writing image sha256:67d3359a01877c8ad68e48c4b64c7731d9703bfbe5eb76a68a5019fdf53cac2b                        0.0s
+ => => naming to docker.io/library/solution-web                                                                     0.0s
+[+] Running 3/3
+ ✔ Container solution-web-1     Started                                                                             0.9s 
+ ✔ Container solution-redis-1   Running                                                                             0.0s 
+ ✔ Container solution-python-1  Running                                                                             0.0s 
+$ docker compose exec python wget -qO- web       
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+$ docker compose logs
+solution-web-1  | 172.29.0.3 - - [18/May/2023:17:22:59 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+solution-redis-1  | 1:C 18 May 2023 17:21:43.233 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+solution-redis-1  | 1:C 18 May 2023 17:21:43.233 # Redis version=7.0.11, bits=64, commit=00000000, modified=0, pid=1, just started
+solution-redis-1  | 1:C 18 May 2023 17:21:43.233 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+solution-redis-1  | 1:M 18 May 2023 17:21:43.234 * monotonic clock: POSIX clock_gettime
+solution-redis-1  | 1:M 18 May 2023 17:21:43.235 * Running mode=standalone, port=6379.
+solution-redis-1  | 1:M 18 May 2023 17:21:43.235 # Server initialized
+solution-redis-1  | 1:M 18 May 2023 17:21:43.236 * Ready to accept connections
+solution-python-1  | 2023-05-18 17:21:44,001 [1] INFO: LOG_LEVEL has value INFO
+solution-python-1  | 2023-05-18 17:21:44,002 [1] INFO: REDIS_HOST has value redis
+solution-python-1  | 2023-05-18 17:21:44,002 [1] INFO: REDIS_PORT has value 6379
+solution-python-1  | 2023-05-18 17:21:44,003 [1] INFO: Started server process [1]
+solution-python-1  | 2023-05-18 17:21:44,003 [1] INFO: Waiting for application startup.
+solution-python-1  | 2023-05-18 17:21:44,004 [1] INFO: Application startup complete.
+solution-python-1  | 2023-05-18 17:21:44,004 [1] INFO: Uvicorn running on http://0.0.0.0:5002 (Press CTRL+C to quit)
+solution-python-1  | 2023-05-18 17:22:02,990 [1] INFO: counter var is 0
+solution-python-1  | 2023-05-18 17:22:02,990 [1] INFO: 172.29.0.1:46620 - "GET /api/v1/info HTTP/1.1" 200
+$ docker compose logs -f web
+solution-web-1  | 172.29.0.3 - - [18/May/2023:17:22:59 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+^[[A^[[A^[[A^[[B^[[B^[[B^Ccanceled
+$ docker compose -f ./my-python-compose.yml down   
+[+] Running 4/4
+ ✔ Container solution-python-1  Removed                                                                             0.4s 
+ ✔ Container solution-web-1     Removed                                                                             0.2s 
+ ✔ Container solution-redis-1   Removed                                                                             0.2s 
+ ✔ Network solution_default     Removed                                                                             0.1s 
+$ docker compose -f ./my-python-compose.yml up -d --scale web=3
+[+] Running 5/6
+ ✔ Network solution_default     Created                                                                             0.0s 
+ ✔ Container solution-web-3     Created                                                                             0.1s 
+ ✔ Container solution-redis-1   Started                                                                             0.8s 
+ ✔ Container solution-web-1     Started                                                                             0.8s 
+ ⠿ Container solution-web-2     Starting                                                                            1.4s 
+ ✔ Container solution-python-1  Started                                                                             1.2s 
+Error response from daemon: driver failed programming external connectivity on endpoint solution-web-2 (41b2077af7c3e0c3c4065544174de555101a291479ea60a6ab34e6392b87f7df): Bind for 0.0.0.0:85 failed: port is already allocated
+$ docker compose -f ./my-python-compose1.yml up -d --scale web=3
+[+] Running 5/5
+ ✔ Container solution-redis-1   Running                                                                             0.0s 
+ ✔ Container solution-python-1  Running                                                                             0.0s 
+ ✔ Container solution-web-1     Started                                                                             1.2s 
+ ✔ Container solution-web-2     Started                                                                             0.7s 
+ ✔ Container solution-web-3     Started                                                                             1.7s 
+$ docker compose exec python wget -qO- web
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+$ docker compose logs -f web
+solution-web-1  | 172.30.0.4 - - [18/May/2023:17:27:46 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+^Ccanceled
+$ docker compose exec python wget -qO- web                      
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+$ docker compose exec python wget -qO- web
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+$ docker compose exec python wget -qO- web
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+$ docker compose logs -f web              
+solution-web-2  | 172.30.0.4 - - [18/May/2023:17:28:18 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+solution-web-3  | 172.30.0.4 - - [18/May/2023:17:28:17 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+solution-web-1  | 172.30.0.4 - - [18/May/2023:17:27:46 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+solution-web-1  | 172.30.0.4 - - [18/May/2023:17:28:20 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+^Ccanceled
+$ docker container logs solution-web-2
+172.30.0.4 - - [18/May/2023:17:28:18 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+$ docker container logs solution-web-3
+172.30.0.4 - - [18/May/2023:17:28:17 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+$ docker container logs solution-web-1
+172.30.0.4 - - [18/May/2023:17:27:46 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+172.30.0.4 - - [18/May/2023:17:28:20 +0000] "GET / HTTP/1.1" 200 612 "-" "Wget" "-"
+$ 

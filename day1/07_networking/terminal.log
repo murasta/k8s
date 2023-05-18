@@ -1,0 +1,72 @@
+$ docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+7e122427830e   bridge    bridge    local
+3fa3be6add82   host      host      local
+4921952dde4b   none      null      local
+$ docker network create szkolenie
+814af4a2b1dfdb529915596c0dcaf5ff8b7b784ffc215c0ec7e2ed7abfa28c10
+$ docker run -d --network szkolenie nginx
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+9e3ea8720c6d: Already exists 
+bf36b6466679: Pull complete 
+15a97cf85bb8: Pull complete 
+9c2d6be5a61d: Pull complete 
+6b7e4a5c7c7a: Pull complete 
+8db4caa19df8: Pull complete 
+Digest: sha256:480868e8c8c797794257e2abd88d0f9a8809b2fe956cbfbc05dcc0bca1f7cd43
+Status: Downloaded newer image for nginx:latest
+1a5392a1a0cd3669bd5fbca996880bb9b4e1c46dcc729f9ccff91daf75eefad9
+$ docker run -d --network szkolenie --name szkolenie  nginx
+fffa55a73daba6982bdcabdd3bfdc88487f1aea16a5d754dd8567c3d36efe250
+$ docker network create redis_net
+115a63573e7c89dcdc08aa7a1bdb40bcef0bd729988c6e15fbd22d8dfc3d604b
+$ docker container run --network redis_net --name redis redis
+1:C 16 May 2023 06:41:53.167 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+1:C 16 May 2023 06:41:53.167 # Redis version=7.0.11, bits=64, commit=00000000, modified=0, pid=1, just started
+1:C 16 May 2023 06:41:53.167 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+1:M 16 May 2023 06:41:53.167 * monotonic clock: POSIX clock_gettime
+1:M 16 May 2023 06:41:53.168 * Running mode=standalone, port=6379.
+1:M 16 May 2023 06:41:53.168 # Server initialized
+1:M 16 May 2023 06:41:53.169 * Ready to accept connections
+^C1:signal-handler (1684219333) Received SIGINT scheduling shutdown...
+1:M 16 May 2023 06:42:13.149 # User requested shutdown...
+1:M 16 May 2023 06:42:13.150 * Saving the final RDB snapshot before exiting.
+1:M 16 May 2023 06:42:13.153 * DB saved on disk
+1:M 16 May 2023 06:42:13.153 # Redis is now ready to exit, bye bye...
+$ docker container ls
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS     NAMES
+fffa55a73dab   nginx     "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes   80/tcp    szkolenie
+1a5392a1a0cd   nginx     "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes   80/tcp    youthful_euclid
+$ docker container run --network redis_net --name redis -d redis
+d2f6f46c6dedf3b5c715900aecf64561411ab765ee81779015434053d5c89f56
+$ docker container run --network redis_net --name my-python -e REDIS_HOST=redos  -d -P my-python
+497122f87046422c2859a064a74ae108c90c74f48509957f8ce948e9474bbb41
+$ docker container ls -a
+CONTAINER ID   IMAGE       COMMAND                  CREATED              STATUS              PORTS                     NAMES
+497122f87046   my-python   "uvicorn main:app --…"   11 seconds ago       Up 10 seconds       0.0.0.0:32768->5002/tcp   my-python
+d2f6f46c6ded   redis       "docker-entrypoint.s…"   About a minute ago   Up About a minute   6379/tcp                  redis
+$ curl 127.0.0.1:32768/healthz
+{"message":"Service is NOT OK","hostname":"497122f87046"}
+$ docker network ls
+NETWORK ID     NAME        DRIVER    SCOPE
+7e122427830e   bridge      bridge    local
+3fa3be6add82   host        host      local
+4921952dde4b   none        null      local
+115a63573e7c   redis_net   bridge    local
+814af4a2b1df   szkolenie   bridge    local
+$ docker container ls         
+CONTAINER ID   IMAGE       COMMAND                  CREATED         STATUS         PORTS                     NAMES
+497122f87046   my-python   "uvicorn main:app --…"   3 minutes ago   Up 3 minutes   0.0.0.0:32768->5002/tcp   my-python
+d2f6f46c6ded   redis       "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes   6379/tcp                  redis
+$ docker rm -f 497122f87046
+497122f87046
+$ docker container run --network redis_net --name my-python -e REDIS_HOST=redis  -d -P my-python
+692f552a5ec6aa73e79fc9f49d8f5048879e9837b2ccc4afb09c9085c2a51c29
+$ docker container ls
+CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS          PORTS                     NAMES
+692f552a5ec6   my-python   "uvicorn main:app --…"   43 seconds ago   Up 43 seconds   0.0.0.0:32769->5002/tcp   my-python
+d2f6f46c6ded   redis       "docker-entrypoint.s…"   5 minutes ago    Up 5 minutes    6379/tcp                  redis
+$ curl 127.0.0.1:32769/healthz
+{"message":"Service is OK","hostname":"692f552a5ec6"}
+$ 

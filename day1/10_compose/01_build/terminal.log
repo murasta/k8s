@@ -1,0 +1,41 @@
+$ docker compose up -d
+[+] Running 7/7
+ ✔ redis 6 layers [⣿⣿⣿⣿⣿⣿]      0B/0B      Pulled                                                                 3.8s 
+   ✔ 8a49fdb3b6a5 Already exists                                                                                  0.0s 
+   ✔ 2121af5b35c8 Pull complete                                                                                   0.6s 
+   ✔ 13ce36f68149 Pull complete                                                                                   0.9s 
+   ✔ d0786890719f Pull complete                                                                                   1.2s 
+   ✔ e0001f8e7e31 Pull complete                                                                                   1.3s 
+   ✔ 4ea079d1c234 Pull complete                                                                                   1.4s 
+[+] Building 6.5s (6/6) FINISHED                                                                                       
+ => [internal] load build definition from Dockerfile                                                              0.0s
+ => => transferring dockerfile: 54B                                                                               0.0s
+ => [internal] load .dockerignore                                                                                 0.0s
+ => => transferring context: 2B                                                                                   0.0s
+ => [internal] load metadata for docker.io/library/nginx:1.15.5                                                   2.4s
+ => [auth] library/nginx:pull token for registry-1.docker.io                                                      0.0s
+ => [1/1] FROM docker.io/library/nginx:1.15.5@sha256:b73f527d86e3461fd652f62cf47e7b375196063bbbd503e853af5be1659  4.0s
+ => => resolve docker.io/library/nginx:1.15.5@sha256:b73f527d86e3461fd652f62cf47e7b375196063bbbd503e853af5be1659  0.0s
+ => => sha256:b73f527d86e3461fd652f62cf47e7b375196063bbbd503e853af5be16597cb2e 2.03kB / 2.03kB                    0.0s
+ => => sha256:d98b66402922eccdbee49ef093edb2d2c5001637bd291ae0a8cd21bb4c36bebe 948B / 948B                        0.0s
+ => => sha256:dbfc48660aeb7ef0ebd74b4a7e0822520aba5416556ee43acb9a6350372e516f 6.02kB / 6.02kB                    0.0s
+ => => sha256:f17d81b4b692f7e0d6c1176c86b81d9f2cb5ac5349703adca51c61debcfe413c 22.49MB / 22.49MB                  1.6s
+ => => sha256:d5c237920c394bda8bf1ef31b00bbde458f6978c159303e00d712a95c3f32a40 22.18MB / 22.18MB                  3.2s
+ => => sha256:a381f92f36de52ade5b5610ef1b354713f21902b2ef32abf8f5101daf686e6b4 203B / 203B                        0.3s
+ => => extracting sha256:f17d81b4b692f7e0d6c1176c86b81d9f2cb5ac5349703adca51c61debcfe413c                         1.5s
+ => => extracting sha256:d5c237920c394bda8bf1ef31b00bbde458f6978c159303e00d712a95c3f32a40                         0.6s
+ => => extracting sha256:a381f92f36de52ade5b5610ef1b354713f21902b2ef32abf8f5101daf686e6b4                         0.0s
+ => exporting to image                                                                                            0.0s
+ => => exporting layers                                                                                           0.0s
+ => => writing image sha256:e7bbfeb625dfde4346cf6479c56f5d7953a2a26af95488855dfd4e7dca1a7105                      0.0s
+ => => naming to docker.io/library/01_build-web                                                                   0.0s
+[+] Running 3/3
+ ✔ Network 01_build_default    Created                                                                            0.1s 
+ ✔ Container 01_build-web-1    Started                                                                            0.9s 
+ ✔ Container 01_build-redis-1  Started                                                                            0.9s 
+$ docker compose down
+[+] Running 3/3
+ ✔ Container 01_build-redis-1  Removed                                                                                        0.3s 
+ ✔ Container 01_build-web-1    Removed                                                                                        0.2s 
+ ✔ Network 01_build_default    Removed                                                                                        0.1s 
+$ docker container rm -f $(docker ps -qa)

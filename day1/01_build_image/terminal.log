@@ -1,0 +1,47 @@
+$ docker image build -t my-hello-world .
+[+] Building 4.4s (6/6) FINISHED                                                                                         
+ => [internal] load .dockerignore                                                                                   0.0s
+ => => transferring context: 2B                                                                                     0.0s
+ => [internal] load build definition from Dockerfile                                                                0.0s
+ => => transferring dockerfile: 124B                                                                                0.0s
+ => [internal] load metadata for docker.io/library/alpine:latest                                                    3.7s
+ => [auth] library/alpine:pull token for registry-1.docker.io                                                       0.0s
+ => [1/1] FROM docker.io/library/alpine@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11     0.7s
+ => => resolve docker.io/library/alpine@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11     0.0s
+ => => sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11 1.64kB / 1.64kB                      0.0s
+ => => sha256:c0669ef34cdc14332c0f1ab0c2c01acb91d96014b172f1a76f3a39e63d1f0bda 528B / 528B                          0.0s
+ => => sha256:5e2b554c1c45d22c9d1aa836828828e320a26011b76c08631ac896cbc3625e3e 1.47kB / 1.47kB                      0.0s
+ => => sha256:8a49fdb3b6a5ff2bd8ec6a86c05b2922a0f7454579ecc07637e94dfd1d0639b6 3.40MB / 3.40MB                      0.3s
+ => => extracting sha256:8a49fdb3b6a5ff2bd8ec6a86c05b2922a0f7454579ecc07637e94dfd1d0639b6                           0.3s
+ => exporting to image                                                                                              0.0s
+ => => exporting layers                                                                                             0.0s
+ => => writing image sha256:c3d0021ccdc12b5748c27c59978acccb6ec2935116928030589d40323edf3385                        0.0s
+ => => naming to docker.io/library/my-hello-world                                                                   0.0s
+$ docker image ls 
+REPOSITORY       TAG       IMAGE ID       CREATED       SIZE
+my-hello-world   latest    c3d0021ccdc1   8 days ago    7.33MB
+hello-world      latest    9c7a54a9a43c   13 days ago   13.3kB
+$ docker image ls -f label=imagetype=workshops
+REPOSITORY       TAG       IMAGE ID       CREATED      SIZE
+my-hello-world   latest    c3d0021ccdc1   8 days ago   7.33MB
+$ docker container run my-hello-world
+Hello world
+$ docker container run -name my-hello-world my-hello-world
+unknown shorthand flag: 'n' in -name
+See 'docker container run --help'.
+$ docker container run --name my-hello-world my-hello-world
+Hello world
+$ docker container ls
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+$ docker container ls -a
+CONTAINER ID   IMAGE            COMMAND                  CREATED              STATUS                          PORTS     NAMES
+6d0439f8be53   my-hello-world   "/bin/echo Hello wor…"   19 seconds ago       Exited (0) 17 seconds ago                 my-hello-world
+99b52ee3ccf7   my-hello-world   "/bin/echo Hello wor…"   About a minute ago   Exited (0) About a minute ago             nice_ganguly
+$ docker container logs 6d0439f8be53
+Hello world
+$ docker container rm 6d0439f8be53
+6d0439f8be53
+$ docker container ls -a            
+CONTAINER ID   IMAGE            COMMAND                  CREATED         STATUS                     PORTS     NAMES
+99b52ee3ccf7   my-hello-world   "/bin/echo Hello wor…"   2 minutes ago   Exited (0) 2 minutes ago             nice_ganguly
+$ 

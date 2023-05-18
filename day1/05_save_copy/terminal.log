@@ -1,0 +1,16 @@
+$ docker container create --name backup-container my-nginx
+b248467b4a225568e5094beb134be2d7b992d938e330215c2e0ac2ff5f5ff5e1
+$ docker container ls -f STATUS=created
+CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS    PORTS     NAMES
+b248467b4a22   my-nginx    "nginx"                  5 seconds ago    Created             backup-container
+cd7b061dd562   my-python   "uvicorn main:app --…"   14 minutes ago   Created             quizzical_cannon
+$ ls            
+cp.cmd          create.cmd      save.sh
+$ docker container cp backup-container:/usr/html/index.html ./
+Successfully copied 2.05kB to /Users/katmur/git/k8s/day1/05_save_copy/./
+$ ls                                                          
+cp.cmd          create.cmd      index.html      save.sh
+$ docker image save -o my-nginx.tar my-nginx                  
+$ ls                                        
+cp.cmd          create.cmd      index.html      my-nginx.tar    save.sh
+$ 

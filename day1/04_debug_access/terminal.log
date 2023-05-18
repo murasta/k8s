@@ -1,0 +1,42 @@
+$ docker container diff my-nginx
+C /run
+A /run/nginx.pid
+C /var
+C /var/log
+C /var/log/nginx
+A /var/log/nginx/access.log
+A /var/log/nginx/error.log
+C /var/lib
+C /var/lib/nginx
+C /var/lib/nginx/tmp
+A /var/lib/nginx/tmp/client_body
+A /var/lib/nginx/tmp/fastcgi
+A /var/lib/nginx/tmp/proxy
+A /var/lib/nginx/tmp/scgi
+A /var/lib/nginx/tmp/uwsgi
+$ docker container port my-nginx
+80/tcp -> 0.0.0.0:32774
+$ docker run --rm -ti -d --cpu-shares 512 -m=100m monitoringartist/docker-killer cpubomb
+Unable to find image 'monitoringartist/docker-killer:latest' locally
+latest: Pulling from monitoringartist/docker-killer
+ff3a5c916c92: Pull complete 
+499ad38805c2: Pull complete 
+33c44813cb05: Pull complete 
+Digest: sha256:85ba7f17a5ef691eb4a3dff7fdab406369085c6ee6e74dc4527db9fe9e448fa1
+Status: Downloaded newer image for monitoringartist/docker-killer:latest
+9e13f63a12773481a619637859c24aedf332147597c80cfd10a7a91f6cbff311
+$ docker stats my-nginx
+CONTAINER ID   NAME       CPU %     MEM USAGE / LIMIT     MEM %     NET I/O     BLOCK I/O    PIDS
+3616384d1d86   my-nginx   0.00%     1.895MiB / 7.675GiB   0.02%     866B / 0B   0B / 4.1kB   2
+^C%                                                                                                                      
+$ docker container top my-nginx
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                1656                1617                0                   16:31               ?                   00:00:00            nginx: master process nginx
+_apt                1705                1656                0                   16:31               ?                   00:00:00            nginx: worker process
+$ 
+
+
+
+
+
+

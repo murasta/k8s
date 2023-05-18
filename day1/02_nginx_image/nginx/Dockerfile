@@ -8,4 +8,5 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 WORKDIR /usr/html
 ENV MY_ENV_VARIABLE="SET ON WORKSHOPS"
 COPY . ./
+EXPOSE 80
 CMD ["nginx"]

@@ -1,0 +1,143 @@
+$ touch password
+$ docker build -t murasta/workshops:password .
+[+] Building 1.5s (8/8) FINISHED                                                                                         
+ => [internal] load build definition from Dockerfile                                                                0.0s
+ => => transferring dockerfile: 116B                                                                                0.0s
+ => [internal] load .dockerignore                                                                                   0.0s
+ => => transferring context: 2B                                                                                     0.0s
+ => [internal] load metadata for docker.io/library/busybox:latest                                                   0.7s
+ => [internal] load build context                                                                                   0.0s
+ => => transferring context: 29B                                                                                    0.0s
+ => [1/3] FROM docker.io/library/busybox@sha256:9e2bbca079387d7965c3a9cee6d0c53f4f4e63ff7637877a83c4c05f2a666112    0.5s
+ => => resolve docker.io/library/busybox@sha256:9e2bbca079387d7965c3a9cee6d0c53f4f4e63ff7637877a83c4c05f2a666112    0.0s
+ => => sha256:9e2bbca079387d7965c3a9cee6d0c53f4f4e63ff7637877a83c4c05f2a666112 2.29kB / 2.29kB                      0.0s
+ => => sha256:086417a48026173aaadca4ce43a1e4b385e8e62cc738ba79fc6637049674cac0 528B / 528B                          0.0s
+ => => sha256:af2c3e96bcf1a80da1d9b57ec0adc29f73f773a4a115344b7e06aec982157a33 1.46kB / 1.46kB                      0.0s
+ => => sha256:a58ecd4f0c864650a4286c3c2d49c7219a3f2fc8d7a0bf478aa9834acfe14ae7 2.59MB / 2.59MB                      0.4s
+ => => extracting sha256:a58ecd4f0c864650a4286c3c2d49c7219a3f2fc8d7a0bf478aa9834acfe14ae7                           0.1s
+ => [2/3] COPY password /                                                                                           0.0s
+ => [3/3] RUN rm /password                                                                                          0.2s
+ => exporting to image                                                                                              0.0s
+ => => exporting layers                                                                                             0.0s
+ => => writing image sha256:ff0a1fe46e690162829ed1e1a826a8a6431d88069844ec4dbf7978c8c7e2f136                        0.0s
+ => => naming to docker.io/murasta/workshops:password                                                               0.0s
+$ docker image inspect murasta/workshops:password
+[
+    {
+        "Id": "sha256:ff0a1fe46e690162829ed1e1a826a8a6431d88069844ec4dbf7978c8c7e2f136",
+        "RepoTags": [
+            "murasta/workshops:password"
+        ],
+        "RepoDigests": [],
+        "Parent": "",
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2023-05-18T17:33:11.028057933Z",
+        "Container": "",
+        "ContainerConfig": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": null,
+            "Cmd": null,
+            "Image": "",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": null
+        },
+        "DockerVersion": "",
+        "Author": "",
+        "Config": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": null,
+            "Image": "",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": [
+                "cat",
+                "/password"
+            ],
+            "OnBuild": null,
+            "Labels": null
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 4859042,
+        "VirtualSize": 4859042,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/j19sc3j19pexdnar1s8dewxy1/diff:/var/lib/docker/overlay2/41e857f8d3a34b6b2c42b266a14b2bcb055365317b87734409c1888797b70ec5/diff",
+                "MergedDir": "/var/lib/docker/overlay2/d20chdkygyluxn2emjosv0bac/merged",
+                "UpperDir": "/var/lib/docker/overlay2/d20chdkygyluxn2emjosv0bac/diff",
+                "WorkDir": "/var/lib/docker/overlay2/d20chdkygyluxn2emjosv0bac/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:1f1d08b81bbe3cb8d730d2e163d6737b4352192712b1f1548720dc224f6cac06",
+                "sha256:41deae8601e2c4a90a390bee2c87bb5c9817c260ae33d6d421a61896cc1d8f92",
+                "sha256:10d8114c440e0d10c8a96e5adc68387da4df2926126701716c785e0bbcb87b75"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2023-05-18T17:33:11.062373014Z"
+        }
+    }
+]
+$ docker image history murasta/workshops:password 
+IMAGE          CREATED         CREATED BY                                      SIZE      COMMENT
+ff0a1fe46e69   8 minutes ago   ENTRYPOINT ["cat" "/password"]                  0B        buildkit.dockerfile.v0
+<missing>      8 minutes ago   RUN /bin/sh -c rm /password # buildkit          0B        buildkit.dockerfile.v0
+<missing>      8 minutes ago   COPY password / # buildkit                      0B        buildkit.dockerfile.v0
+<missing>      6 days ago      /bin/sh -c #(nop)  CMD ["sh"]                   0B        
+<missing>      6 days ago      /bin/sh -c #(nop) ADD file:c22c6617fa9a85e0d…   4.86MB    
+$ rm password
+$ docker image inspect --format "{{json .RootFS.Layers}}" murasta/workshops:password
+["sha256:1f1d08b81bbe3cb8d730d2e163d6737b4352192712b1f1548720dc224f6cac06","sha256:41deae8601e2c4a90a390bee2c87bb5c9817c260ae33d6d421a61896cc1d8f92","sha256:10d8114c440e0d10c8a96e5adc68387da4df2926126701716c785e0bbcb87b75"]
+$ docker volume ls
+DRIVER    VOLUME NAME
+local     8b952c099f49abef3888272b5abcf873bd6024cc90c1300450ee00100e7d7d2e
+local     423d02774899fe5b001439745b85552923fbd706e841dbad78be095951fbab40
+local     1152aff55359f0a2808c27207825ba63457a0f51a4cb5a31bba74125f6849e4c
+local     d22ba4bf3b2347ac8bdbb14c4a2a0f3a797429c234db0f2fda4df9ac42cc928e
+local     my-volume
+$ docker volume prune
+WARNING! This will remove anonymous local volumes not used by at least one container.
+Are you sure you want to continue? [y/N] y
+Deleted Volumes:
+d22ba4bf3b2347ac8bdbb14c4a2a0f3a797429c234db0f2fda4df9ac42cc928e
+
+Total reclaimed space: 89B                     
+$ ls /Users/katmur/Library/Containers/com.docker.docker/Data/docker.raw.sock 
+/Users/katmur/Library/Containers/com.docker.docker/Data/docker.raw.sock
+$ docker image save -o test.tar murasta/workshops:password                  
+$ docker image inspect --format "{{json .RootFS.Layers}}" murasta/workshops:password
+["sha256:1f1d08b81bbe3cb8d730d2e163d6737b4352192712b1f1548720dc224f6cac06","sha256:41deae8601e2c4a90a390bee2c87bb5c9817c260ae33d6d421a61896cc1d8f92","sha256:10d8114c440e0d10c8a96e5adc68387da4df2926126701716c785e0bbcb87b75"]
+$ #in tar file find layer.tar file and then password file
+
+
+
+
+
+
+
